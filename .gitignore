@@ -1,2 +1,6 @@
 /pkg
 /bin
+/node_modules
+/src/github.com
+/src/golang.org/
+package-lock.json
