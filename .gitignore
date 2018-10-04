@@ -5,4 +5,4 @@
 /src/golang.org
 /src/gopkg.in
 package-lock.json
-
+/src/old.thing/dist/bundle
