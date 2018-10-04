@@ -1,0 +1,5 @@
+{
+  "PrivateKeyPath": "/Users/phann123/Documents/projects/golang/old.thing/src/old.thing/settings/keys/private_key",
+  "PublicKeyPath": "/Users/phann123/Documents/projects/golang/old.thing/src/old.thing/settings/keys/public_key.pub",
+  "JWTExpirationDelta": 72
+}
