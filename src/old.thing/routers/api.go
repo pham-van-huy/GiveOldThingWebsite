@@ -10,6 +10,7 @@ func handleApi(router *mux.Router) *mux.Router {
 	apiRouter := mux.NewRouter()
 	subRouter := apiRouter.PathPrefix("/api").Subrouter()
 	subRouter.HandleFunc("/posts", controllers.PostList)
+	subRouter.HandleFunc("/posts/create", controllers.PostCreate).Methods("POST")
 	router.PathPrefix("/api").Handler(negroni.New(negroni.HandlerFunc(RequireTokenAuthentication), negroni.Wrap(apiRouter)))
 
 	return router

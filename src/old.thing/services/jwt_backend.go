@@ -9,7 +9,6 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/pborman/uuid"
 	"golang.org/x/crypto/bcrypt"
 	models "old.thing/models"
 	"old.thing/settings"
@@ -57,7 +56,6 @@ func (backend *JWTAuthenticationBackend) Authenticate(user *models.User) bool {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testing"), 10)
 
 	testUser := models.User{
-		ID:       uuid.New(),
 		Username: "haku",
 		Password: string(hashedPassword),
 	}

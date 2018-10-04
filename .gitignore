@@ -2,6 +2,7 @@
 /bin
 /node_modules
 /src/github.com
-/src/golang.org/
+/src/golang.org
+/src/gopkg.in
 package-lock.json
 

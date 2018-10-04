@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	request "github.com/dgrijalva/jwt-go/request"
@@ -16,7 +17,7 @@ type TokenAuthentication struct {
 func Login(requestUser *models.User) (int, []byte) {
 	authBackend := InitJWTAuthenticationBackend()
 	if authBackend.Authenticate(requestUser) {
-		token, err := authBackend.GenerateToken(requestUser.ID)
+		token, err := authBackend.GenerateToken(strconv.Itoa(requestUser.ID))
 		if err != nil {
 			return http.StatusInternalServerError, []byte("")
 		} else {
@@ -30,7 +31,7 @@ func Login(requestUser *models.User) (int, []byte) {
 
 func RefreshToken(requestUser *models.User) []byte {
 	authBackend := InitJWTAuthenticationBackend()
-	token, err := authBackend.GenerateToken(requestUser.ID)
+	token, err := authBackend.GenerateToken(strconv.Itoa(requestUser.ID))
 	if err != nil {
 		panic(err)
 	}

@@ -1,8 +1,14 @@
 package models
 
 import (
+	"bytes"
+	"database/sql/driver"
+	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"time"
+
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type GeoPoint struct {
@@ -14,18 +20,63 @@ func (p *GeoPoint) String() string {
 	return fmt.Sprintf("POINT(%v, %v)", p.Lat, p.Lng)
 }
 
+// Scan implements the Scanner interface which will scan the postgis POINT(x, y) into the GeoPoint struct
+func (p *GeoPoint) Scan(val interface{}) error {
+	b, err := hex.DecodeString(string(val.([]uint8)))
+	if err != nil {
+		return err
+	}
+	r := bytes.NewReader(b)
+	var wkbByteOrder uint8
+	if err := binary.Read(r, binary.LittleEndian, &wkbByteOrder); err != nil {
+		return err
+	}
+
+	var byteOrder binary.ByteOrder
+	switch wkbByteOrder {
+	case 0:
+		byteOrder = binary.BigEndian
+	case 1:
+		byteOrder = binary.LittleEndian
+	default:
+		return fmt.Errorf("Invalid byte order %u", wkbByteOrder)
+	}
+
+	var wkbGeometryType uint64
+	if err := binary.Read(r, byteOrder, &wkbGeometryType); err != nil {
+		return err
+	}
+
+	if err := binary.Read(r, byteOrder, p); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *GeoPoint) Value() (driver.Value, error) {
+	return p.String(), nil
+}
+
+type Model struct {
+	ID        int `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+}
+
 // User model
 type User struct {
-	ID        string    `json:"uuid" form:"-"`
-	Name      string    // column name will be `name`
-	Username  string    `json:"username" form:"username"`
-	Email     string    // column name will be `email`
-	Password  string    `json:"password" form:"password"`
-	Birthday  time.Time // column name will be `birthday`
-	Avatar    string    // column name will be `Avatar`
-	Address   string    // column name will be `Address`
-	Location  GeoPoint  `json:"location"`
-	CreatedAt time.Time // column name will be `created_at`
+	Model
+	Name     string // column name will be `name`
+	Username string `json:"username" form:"username"`
+	Email    string // column name will be `email`
+	Password string `json:"password" form:"password"`
+	Birthday time.Time
+	Avatar   string
+	Address  string // column name will be `Address`
+	Lat      float64
+	Lng      float64
 }
 
 // func Table name
@@ -35,17 +86,16 @@ func (User) TableName() string {
 
 // Post struct
 type Post struct {
-	ID          uint // column name will be `id`
+	Model
 	Title       string
 	UserId      int
-	Owner       User
+	User        User
 	Category    Category
-	CategoryId  int       // column name will be `Password`
-	Description string    // column name will be `birthday`
-	Contact     string    // column name will be `Avatar`
-	Location    GeoPoint  `json:"location"`
-	CreatedAt   time.Time // column name will be `created_at`
-	UpdatedAt   time.Time // column name will be `created_at`
+	CategoryId  int
+	Description string
+	Contact     string
+	Lat         float64
+	Lng         float64
 }
 
 func (Post) TableName() string {
@@ -54,12 +104,10 @@ func (Post) TableName() string {
 
 // Category struct
 type Category struct {
-	ID          uint // column name will be `id`
+	Model
 	Name        string
-	Description string    // column name will be `birthday`
-	Image       string    // column name will be `Avatar`
-	CreatedAt   time.Time // column name will be `created_at`
-	UpdatedAt   time.Time // column name will be `created_at`
+	Description string // column name will be `birthday`
+	Image       string // column name will be `Avatar`
 }
 
 func (Category) TableName() string {
