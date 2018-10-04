@@ -1,6 +1,11 @@
 /pkg
 /bin
+<<<<<<< HEAD
 /node_modules
 /src/github.com
 /src/golang.org/
 package-lock.json
+=======
+/src/github.com
+/src/golang.org
+>>>>>>> add gitignore
