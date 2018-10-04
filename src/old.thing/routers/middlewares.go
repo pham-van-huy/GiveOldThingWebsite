@@ -20,6 +20,7 @@ func InitRoutes() *mux.Router {
 }
 
 func SetAuthenticationRoutes(router *mux.Router) *mux.Router {
+	router.HandleFunc("/", controllers.Home).Methods("GET")
 	router.HandleFunc("/token-auth", controllers.Login).Methods("POST")
 	router.Handle("/refresh-token-auth",
 		negroni.New(
@@ -30,6 +31,12 @@ func SetAuthenticationRoutes(router *mux.Router) *mux.Router {
 		negroni.New(
 			negroni.HandlerFunc(RequireTokenAuthentication),
 			negroni.HandlerFunc(controllers.Logout),
+		)).Methods("GET")
+
+	router.Handle("/refresh-token-auth",
+		negroni.New(
+			negroni.HandlerFunc(RequireTokenAuthentication),
+			negroni.HandlerFunc(controllers.RefreshToken),
 		)).Methods("GET")
 	return router
 
