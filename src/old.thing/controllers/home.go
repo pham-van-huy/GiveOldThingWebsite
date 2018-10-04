@@ -1,14 +1,12 @@
 package controllers
 
 import (
-	// "fmt"
 	"html/template"
 	"net/http"
 )
 
 func Home(w http.ResponseWriter, req *http.Request) {
-	// fmt.Fprintf(w, "Welcome to the home page!")
-	tmpl, err := template.ParseFiles("src/old.thing/resources/views/index.html")
+	tmpl, err := template.ParseFiles("resources/views/index.html")
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -18,4 +16,8 @@ func Home(w http.ResponseWriter, req *http.Request) {
 	if err := tmpl.Execute(w, nil); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func Static() {
+	http.FileServer(http.Dir("static"))
 }
