@@ -2,13 +2,14 @@ package databases
 
 import (
 	"fmt"
-	m "models"
 
-	_ "github.com/jilsnzhu/gorm/dialects/mysql"
+	m "old.thing/models"
+
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func main() {
+func Init() {
 	db, err := gorm.Open("mysql", "root:@/oldthing?charset=utf8&parseTime=True&loc=Local")
 
 	fmt.Println("err", err)
@@ -19,5 +20,4 @@ func main() {
 	db.AutoMigrate(&m.Category{})
 	// user := User{Name: "Ngoc", Birthday: time.Now()}
 	// db.Create(&user)
-
 }

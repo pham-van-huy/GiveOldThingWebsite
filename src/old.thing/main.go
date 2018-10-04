@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"old.thing/routers"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/urfave/negroni"
+	"old.thing/routers"
 )
 
 func main() {
@@ -24,5 +22,4 @@ func main() {
 	n.UseHandler(router)
 
 	http.ListenAndServe(":8001", n)
-
 }

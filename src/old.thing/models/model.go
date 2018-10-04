@@ -11,7 +11,7 @@ type GeoPoint struct {
 }
 
 func (p *GeoPoint) String() string {
-	return fmt.Sprintf("POINT(%v, %v", p.Lat, p.Lng)
+	return fmt.Sprintf("POINT(%v, %v)", p.Lat, p.Lng)
 }
 
 // User model
