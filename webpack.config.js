@@ -1,7 +1,7 @@
 module.exports = {
   entry: [
-    './src/old.thing/resources/assets/js/reactjs/index.js'
-    // './src/old.thing/resources/assets/sass/app.scss'
+    './src/old.thing/resources/assets/js/reactjs/index.js',
+    './src/old.thing/resources/assets/sass/app.scss'
   ],
   module: {
     rules: [
