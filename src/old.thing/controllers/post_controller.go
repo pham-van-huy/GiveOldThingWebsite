@@ -1,9 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"strings"
 
+	"github.com/go-playground/form"
 	"github.com/gorilla/mux"
 	validator "gopkg.in/validator.v2"
 	"old.thing/models"
@@ -17,47 +21,116 @@ type NewPostRequest struct {
 	CategoryId  int    `validate:nonzero`
 }
 
+var decoder *form.Decoder
+
+// PostCreate create post
 func PostCreate(w http.ResponseWriter, r *http.Request) {
+	decoder = form.NewDecoder()
+	r.ParseMultipartForm(32 << 20)
+
 	post := models.Post{}
-	err := json.NewDecoder(r.Body).Decode(&post)
-	if err != nil {
-		panic(err)
+	err := decoder.Decode(&post, r.PostForm)
+
+	if err == nil {
+		// handle error
+		nur := NewPostRequest{Title: post.Title, Description: post.Description, UserId: post.UserId, CategoryId: post.CategoryId}
+
+		if errs := validator.Validate(nur); errs != nil {
+			ResErrors(w, errs)
+		}
+		db := services.DB_Instance()
+		db.Create(&post)
+
+		images := r.MultipartForm.File["Images[]"]
+		if images != nil {
+			for _, fileHeader := range images {
+				file, _ := fileHeader.Open()
+				arrFilename := strings.Split(fileHeader.Filename, ".")
+				extension := arrFilename[len(arrFilename)-1]
+				fileName := RandSeq(20) + "." + extension
+				f, err := os.OpenFile("uploads/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer f.Close()
+
+				io.Copy(f, file)
+
+				mImage := models.Image{}
+				mImage.Name = fileHeader.Filename
+				mImage.Description = ""
+				mImage.Link = fileName
+				mImage.OwnerId = post.ID
+				mImage.OwnerType = models.TYPE_POST
+				db.Create(&mImage)
+			}
+		}
+		ResSuccess(w, post)
 	}
-
-	nur := NewPostRequest{Title: post.Title, Description: post.Description, UserId: post.UserId, CategoryId: post.CategoryId}
-
-	if errs := validator.Validate(nur); errs != nil {
-		ResErrors(w, errs)
-	}
-	db := services.DB_Instance()
-	db.Create(&post)
-
-	ResSuccess(w, post)
 }
 
 // PostUpdate update post
 func PostUpdate(w http.ResponseWriter, r *http.Request) {
-
-	postParams := models.Post{}
-	err := json.NewDecoder(r.Body).Decode(&postParams)
+	decoder = form.NewDecoder()
+	db := services.DB_Instance()
+	r.ParseMultipartForm(32 << 20)
+	post := models.Post{}
+	err := decoder.Decode(&post, r.PostForm)
 	if err != nil {
 		panic(err)
 	}
+	images := r.MultipartForm.File["Images[]"]
+	if images != nil {
+		for _, fileHeader := range images {
+			file, _ := fileHeader.Open()
+			arrFilename := strings.Split(fileHeader.Filename, ".")
+			extension := arrFilename[len(arrFilename)-1]
+			fileName := RandSeq(20) + "." + extension
+			f, err := os.OpenFile("uploads/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			defer f.Close()
 
-	request := NewPostRequest{Title: postParams.Title, Description: postParams.Description, UserId: postParams.UserId, CategoryId: postParams.CategoryId}
+			io.Copy(f, file)
+			mImage := models.Image{}
+			mImage.Name = fileHeader.Filename
+			mImage.Description = ""
+			mImage.Link = fileName
+			mImage.OwnerId = post.ID
+			mImage.OwnerType = models.TYPE_POST
+			db.Create(&mImage)
+		}
+	}
+	removeLinks := r.Form["RemoveImages[]"]
+
+	if len(removeLinks) != 0 {
+		for _, link := range removeLinks {
+			path := "uploads/" + link
+			os.Remove(path)
+			// if err != nil {
+			// 	return
+			// }
+			fmt.Println("==> done deleting file")
+			db.Where("link = ?", link).Delete(models.Image{})
+		}
+	}
+
+	request := NewPostRequest{Title: post.Title, Description: post.Description, UserId: post.UserId, CategoryId: post.CategoryId}
 
 	if errs := validator.Validate(request); errs != nil {
 		ResErrors(w, errs)
 	}
 
 	id := mux.Vars(r)["id"]
-	post := models.Post{}
-	db := services.DB_Instance()
-	db.First(&post, id)
+	inpost := models.Post{}
+	db.First(&inpost, id)
 
-	db.Model(&post).Updates(postParams)
+	db.Model(&inpost).Updates(post)
 
-	ResSuccess(w, post)
+	ResSuccess(w, inpost)
 }
 
 func PostList(w http.ResponseWriter, r *http.Request) {
