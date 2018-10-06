@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	validator "gopkg.in/validator.v2"
 	"old.thing/models"
 	"old.thing/services"
@@ -30,6 +31,32 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	db := services.DB_Instance()
 	db.Create(&post)
+
+	ResSuccess(w, post)
+}
+
+// PostUpdate update post
+func PostUpdate(w http.ResponseWriter, r *http.Request) {
+
+	postParams := models.Post{}
+	err := json.NewDecoder(r.Body).Decode(&postParams)
+	if err != nil {
+		panic(err)
+	}
+
+	request := NewPostRequest{Title: postParams.Title, Description: postParams.Description, UserId: postParams.UserId, CategoryId: postParams.CategoryId}
+
+	if errs := validator.Validate(request); errs != nil {
+		ResErrors(w, errs)
+	}
+
+	id := mux.Vars(r)["id"]
+	post := models.Post{}
+	db := services.DB_Instance()
+	db.First(&post, id)
+
+	db.Model(&post).Updates(postParams)
+
 	ResSuccess(w, post)
 }
 
@@ -39,4 +66,22 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 	db.Preload("Category").Limit(10).Find(&posts)
 
 	ResSuccess(w, posts)
+}
+
+func PostEdit(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	post := models.Post{}
+	db := services.DB_Instance()
+	db.First(&post, id)
+	ResSuccess(w, post)
+}
+
+func PostDelete(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	post := models.Post{}
+	db := services.DB_Instance()
+	db.First(&post, id)
+	db.Delete(&post)
+
+	ResSuccess(w, post)
 }
