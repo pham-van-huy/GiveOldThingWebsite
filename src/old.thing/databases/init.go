@@ -18,6 +18,7 @@ func Init() {
 	db.AutoMigrate(&m.User{})
 	db.AutoMigrate(&m.Post{})
 	db.AutoMigrate(&m.Category{})
+	db.AutoMigrate(&m.Image{})
 	// user := User{Name: "Ngoc", Birthday: time.Now()}
 	// db.Create(&user)
 }

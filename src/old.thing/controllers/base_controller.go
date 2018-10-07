@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"math/rand"
 	"net/http"
 	"reflect"
+	"time"
 )
 
 type payload interface {
@@ -12,6 +14,20 @@ type payload interface {
 type response struct {
 	Success bool    `json:"success"`
 	Data    payload `json:"data"`
+}
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func RandSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
 
 func ResSuccess(w http.ResponseWriter, data payload) {

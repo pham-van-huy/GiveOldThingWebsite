@@ -68,15 +68,15 @@ type Model struct {
 // User model
 type User struct {
 	Model
-	Name     string // column name will be `name`
-	Username string `json:"username" form:"username"`
-	Email    string // column name will be `email`
-	Password string `json:"password" form:"password"`
-	Birthday time.Time
-	Avatar   string
-	Address  string // column name will be `Address`
-	Lat      float64
-	Lng      float64
+	Name     string    `json:"Name" form:"Name"`
+	Username string    `json:"Username" form:"Username"`
+	Email    string    `json:"Email" form:"Email"`
+	Password string    `json:"Password" form:"Password"`
+	Birthday time.Time `json:"Birthday" form:"Birthday"`
+	Avatar   string    `json:"Avatar" form:"Avatar"`
+	Address  string    `json:"Address" form:"Address"`
+	Lat      float64   `json:"Lat" form:"Lat"`
+	Lng      float64   `json:"Lng" form:"Lng"`
 }
 
 // func Table name
@@ -87,15 +87,15 @@ func (User) TableName() string {
 // Post struct
 type Post struct {
 	Model
-	Title       string
-	UserId      int
+	Title       string `json:"Title" form:"Title"`
+	UserId      int    `json:"UserId" form:"UserId"`
 	User        User
 	Category    Category
-	CategoryId  int
-	Description string
-	Contact     string
-	Lat         float64
-	Lng         float64
+	CategoryId  int     `json:"CategoryId" form:"CategoryId"`
+	Description string  `json:"Description" form:"Description"`
+	Contact     string  `json:"Contact" form:"Contact"`
+	Lat         float64 `json:"Lat" form:"Lat"`
+	Lng         float64 `json:"Lng" form:"Lng"`
 }
 
 func (Post) TableName() string {
@@ -105,11 +105,29 @@ func (Post) TableName() string {
 // Category struct
 type Category struct {
 	Model
-	Name        string
-	Description string // column name will be `birthday`
-	Image       string // column name will be `Avatar`
+	Name        string `json:"Name" form:"Name"`
+	Description string `json:"Description" form:"Description"`
+	Image       Image  `gorm:"polymorphic:Owner;"`
 }
 
 func (Category) TableName() string {
 	return "categories"
 }
+
+// Post struct
+type Image struct {
+	Model
+	OwnerId     int
+	OwnerType   string
+	Name        string `json:"Name" form:"Name"`
+	Description string `json:"Description" form:"Description"`
+	Link        string `json:"Link" form:"Link"`
+}
+
+func (Image) TableName() string {
+	return "images"
+}
+
+const (
+	TYPE_POST string = "posts"
+)
