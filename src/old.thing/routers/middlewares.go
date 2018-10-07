@@ -15,10 +15,21 @@ import (
 func InitRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router.PathPrefix("/asset/").Handler(http.StripPrefix("/asset/", http.FileServer(http.Dir("dist"))))
+	router = SocketRouter(router)
 	router = SetAuthenticationRoutes(router)
 	router = handleApi(router)
 	router.HandleFunc("/{home:.*}", controllers.Home).Methods("GET")
 
+	return router
+}
+
+func SocketRouter(router *mux.Router) *mux.Router {
+	hub := ser.NewHub()
+
+	go hub.Run()
+	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		ser.ServeWs(hub, w, r)
+	})
 	return router
 }
 

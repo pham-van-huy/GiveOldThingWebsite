@@ -1,13 +1,16 @@
 package main
 
 import (
-	"github.com/urfave/negroni"
 	"net/http"
+
+	"github.com/urfave/negroni"
 	"old.thing/routers"
 )
 
 func main() {
+
 	router := routers.InitRoutes()
+
 	n := negroni.Classic()
 	n.UseHandler(router)
 
