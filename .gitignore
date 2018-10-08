@@ -7,3 +7,4 @@
 package-lock.json
 /src/old.thing/dist/bundle
 /src/old.thing/uploads
+/.vscode

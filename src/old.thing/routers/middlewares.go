@@ -17,11 +17,12 @@ func InitRoutes() *mux.Router {
 	router.PathPrefix("/asset/").Handler(http.StripPrefix("/asset/", http.FileServer(http.Dir("dist"))))
 	router = SetAuthenticationRoutes(router)
 	router = handleApi(router)
+	router.HandleFunc("/{home:.*}", controllers.Home).Methods("GET")
+
 	return router
 }
 
 func SetAuthenticationRoutes(router *mux.Router) *mux.Router {
-	router.HandleFunc("/", controllers.Home).Methods("GET")
 	router.HandleFunc("/token-auth", controllers.Login).Methods("POST")
 	router.Handle("/refresh-token-auth",
 		negroni.New(
@@ -39,8 +40,8 @@ func SetAuthenticationRoutes(router *mux.Router) *mux.Router {
 			negroni.HandlerFunc(RequireTokenAuthentication),
 			negroni.HandlerFunc(controllers.RefreshToken),
 		)).Methods("GET")
-	return router
 
+	return router
 }
 
 func RequireTokenAuthentication(rw http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
