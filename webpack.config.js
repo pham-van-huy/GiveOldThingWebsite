@@ -1,3 +1,5 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 module.exports = {
   entry: [
     './src/old.thing/resources/assets/js/reactjs/index.js',
@@ -36,5 +38,10 @@ module.exports = {
     path: __dirname + '/src/old.thing/dist/bundle',
     publicPath: '/',
     filename: '[name].js'
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: './src/old.thing/resources/assets/sass/app1.css', to: 'app1.css' }
+    ])
+  ],
 };
