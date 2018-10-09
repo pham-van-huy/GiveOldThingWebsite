@@ -14,7 +14,7 @@ import (
 
 func InitRoutes() *mux.Router {
 	router := mux.NewRouter()
-	router.PathPrefix("/asset/").Handler(http.StripPrefix("/asset/", http.FileServer(http.Dir("dist"))))
+	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("dist"))))
 	router = SocketRouter(router)
 	router = SetAuthenticationRoutes(router)
 	router = handleApi(router)
