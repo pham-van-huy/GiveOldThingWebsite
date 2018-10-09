@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Home(w http.ResponseWriter, req *http.Request) {
+func HomeIndex(w http.ResponseWriter, req *http.Request) {
 	tmpl, err := template.ParseFiles("resources/views/index.html")
 
 	if err != nil {

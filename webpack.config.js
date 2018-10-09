@@ -41,7 +41,7 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: './src/old.thing/resources/assets/sass/app1.css', to: 'app1.css' }
+      { from: './src/old.thing/resources/amado', to: '../amado' },
     ])
   ],
 };

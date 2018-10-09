@@ -5,6 +5,6 @@
 /src/golang.org
 /src/gopkg.in
 package-lock.json
-/src/old.thing/dist/bundle
+/src/old.thing/dist
 /src/old.thing/uploads
 /.vscode
