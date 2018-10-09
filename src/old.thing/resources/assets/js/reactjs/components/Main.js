@@ -6,11 +6,13 @@ import { Route, Switch, Link, Router } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 
 const Main = ({ route }) => (
-    <div className="container">
+    <div id="wrap-container">
         <Header />
-        {renderRoutes(route.routes)}
+        <div className="container">
+            {renderRoutes(route.routes)}
+        </div>
         <Footer />
-    </div>
+    </div> 
 )
 
 export default Main

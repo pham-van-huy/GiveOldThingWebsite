@@ -18,7 +18,7 @@ func InitRoutes() *mux.Router {
 	router = SocketRouter(router)
 	router = SetAuthenticationRoutes(router)
 	router = handleApi(router)
-	router.HandleFunc("/{home:.*}", controllers.Home).Methods("GET")
+	router.HandleFunc("/{home:.*}", controllers.HomeIndex).Methods("GET")
 
 	return router
 }
