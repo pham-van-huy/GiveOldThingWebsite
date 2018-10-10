@@ -1,40 +1,60 @@
 package services
 
 import (
-	"github.com/gomodule/redigo/redis"
+	"fmt"
+	"time"
+
+	"github.com/go-redis/redis"
 )
 
-type RedisCli struct {
-	conn redis.Conn
+type RedisClient struct {
+	*redis.Client
 }
 
-var instanceRedisCli *RedisCli = nil
+var instanceRedisCli *RedisClient = nil
 
-func Connect() (conn *RedisCli) {
+func Redis_Connect() *RedisClient {
 	if instanceRedisCli == nil {
-		instanceRedisCli = new(RedisCli)
-		var err error
-
-		instanceRedisCli.conn, err = redis.Dial("tcp", ":6379")
-
-		if err != nil {
-			panic(err)
-		}
+		instanceRedisCli = &RedisClient{redis.NewClient(&redis.Options{
+			Addr:     "localhost:6379",
+			Password: "", // no password set
+			DB:       0,  // use default DB
+		})}
+		pong, err := instanceRedisCli.Ping().Result()
+		fmt.Println(pong, err)
 	}
 
 	return instanceRedisCli
 }
 
-func (redisCli *RedisCli) SetValue(key string, value string, expiration ...interface{}) error {
-	_, err := redisCli.conn.Do("SET", key, value)
-
-	if err == nil && expiration != nil {
-		redisCli.conn.Do("EXPIRE", key, expiration[0])
+func (client *RedisClient) SetValue(key string, value string, expiration ...interface{}) error {
+	exp := 0
+	if expiration != nil {
+		exp = expiration[0].(int)
 	}
-
+	err := client.Set(key, value, time.Duration(time.Second*time.Duration(exp))).Err()
+	if err != nil {
+		panic(err)
+	}
 	return err
 }
 
-func (redisCli *RedisCli) GetValue(key string) (interface{}, error) {
-	return redisCli.conn.Do("GET", key)
+func (client *RedisClient) GetValue(key string) (interface{}, error) {
+	val, err := client.Get(key).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	return val, err
 }
+
+// func (redisCli *RedisCli) GetValueString(key string) interface{} {
+// 	val, err := redisCli.conn.Do("GET", key)
+// 	if err == nil {
+// 		intArr := val.([]int)
+// 		n := bytes.Index(intArr, []byte{0})
+// 		return string(intArr[:])
+// 	}
+
+// 	return err
+// }

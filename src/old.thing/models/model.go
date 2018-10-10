@@ -128,6 +128,16 @@ func (Image) TableName() string {
 	return "images"
 }
 
+// City struct
+type City struct {
+	Model
+	Name string `json:"Name" form:"Name"`
+}
+
+func (City) TableName() string {
+	return "cities"
+}
+
 const (
 	TYPE_POST string = "posts"
 )

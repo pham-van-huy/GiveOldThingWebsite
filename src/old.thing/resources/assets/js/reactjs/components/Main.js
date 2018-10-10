@@ -6,11 +6,9 @@ import { renderRoutes } from 'react-router-config'
 
 const Main = ({ route }) => (
     <div id="wrap-container">
-        <div className="container">
-            <Header />
+        <Header />
             {renderRoutes(route.routes)}
-            <Footer />
-        </div>
+        <Footer />
     </div>
 )
 

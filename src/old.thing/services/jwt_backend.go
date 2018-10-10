@@ -53,14 +53,12 @@ func (backend *JWTAuthenticationBackend) GenerateToken(userUUID string) (string,
 }
 
 func (backend *JWTAuthenticationBackend) Authenticate(user *models.User) bool {
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testing"), 10)
-
-	testUser := models.User{
-		Username: "haku",
-		Password: string(hashedPassword),
-	}
-
-	return user.Username == testUser.Username && bcrypt.CompareHashAndPassword([]byte(testUser.Password), []byte(user.Password)) == nil
+	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	db := DB_Instance()
+	userAuth := models.User{}
+	db.Where("username = ?", user.Username).First(&userAuth)
+	err := bcrypt.CompareHashAndPassword([]byte(userAuth.Password), []byte(user.Password))
+	return &userAuth != nil && err == nil
 }
 
 func (backend *JWTAuthenticationBackend) getTokenRemainingValidity(timestamp interface{}) int {
@@ -75,12 +73,12 @@ func (backend *JWTAuthenticationBackend) getTokenRemainingValidity(timestamp int
 }
 
 func (backend *JWTAuthenticationBackend) Logout(tokenString string, token *jwt.Token) error {
-	redisConn := Connect()
+	redisConn := Redis_Connect()
 	return redisConn.SetValue(tokenString, tokenString, backend.getTokenRemainingValidity(token.Claims.(jwt.MapClaims)["exp"]))
 }
 
 func (backend *JWTAuthenticationBackend) IsInBlacklist(token string) bool {
-	redisConn := Connect()
+	redisConn := Redis_Connect()
 	redisToken, _ := redisConn.GetValue(token)
 
 	if redisToken == nil {
