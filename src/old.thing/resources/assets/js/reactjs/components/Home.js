@@ -7,9 +7,6 @@ const Home = () => (
   <div>
     <div className="row row-offcanvas row-offcanvas-right">
       <div className="col-12 col-md-9">
-        {/* <p className="float-right hidden-md-up">
-          <button type="button" class="btn btn-primary btn-sm" data-toggle="offcanvas">Toggle nav</button>
-        </p> */}
         <div className="row">
           <ListPost></ListPost>
           <div className="col-6 col-lg-4">

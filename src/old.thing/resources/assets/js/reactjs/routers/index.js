@@ -2,6 +2,7 @@
 import Main from '../components/Main'
 import Home from '../components/Home'
 import AddTodo from '../containers/AddTodo'
+import CreatePost from '../components/CreatePost'
 
 const routes = [
   { component: Main,
@@ -10,8 +11,8 @@ const routes = [
         exact: true,
         component: Home
       },
-      { path: '/add',
-        component: AddTodo,
+      { path: '/posts/create',
+        component: CreatePost,
         // routes: [
         //   { path: '/child/:id/grand-child',
         //     component: GrandChild
