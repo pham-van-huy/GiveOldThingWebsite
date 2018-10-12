@@ -7,9 +7,11 @@ import (
 )
 
 func handleApi(router *mux.Router) *mux.Router {
+	router.HandleFunc("/web/cities", controllers.CityList)
+	router.HandleFunc("/web/categories", controllers.CateList)
+
 	apiRouter := mux.NewRouter()
 	subRouter := apiRouter.PathPrefix("/api").Subrouter()
-	subRouter.HandleFunc("/cities", controllers.CityList)
 
 	subRouter.HandleFunc("/posts", controllers.PostList)
 	subRouter.HandleFunc("/posts/create", controllers.PostCreate).Methods("POST")

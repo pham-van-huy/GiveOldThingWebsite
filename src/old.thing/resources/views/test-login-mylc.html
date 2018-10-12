@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Make world awesome!</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/bundle/app.css">
+</head>
+
+<body>
+    <div id="app">        
+    </div> <!-- #app -->
+    <a href="http://localhost:8080/web?param=param1" id="link-move">Vao chatbot</a>
+    <!--/.container-->
+    <script src="/assets/js/jquery-3.3.1.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/bundle/main.js"></script>
+
+    <script type="text/javascript">
+        (function (c, s, p) {
+            if (typeof $ === "undefined") {
+                var e = document.createElement('script');
+                e.async = 1;e.src = s + "/js/jquery.min.js";
+                var t = document.getElementsByTagName('head')[0];
+                t.parentNode.appendChild(e);
+            }
+
+            var fnAfterJquery = function () {
+                if( window.$ ) {
+                    var e = document.createElement('script');
+
+                    // Import hidden iframe for button
+                    e.async = 1;
+                    e.id = 'elemTrack';
+                    e.src = s + '/js/track_user.js';
+                    var data = JSON.stringify({target_url: s, param: p, page_url: window.location.href, referrer_url: document.referrer});
+                    e.setAttribute('data-inherit', data);
+                    var t = document.getElementsByTagName('head')[0];
+                    t.appendChild(e);
+
+                    // Import process event in page
+                    e = document.createElement('script');
+                    e.async = 1;
+                    e.src = s + '/js/event_page.js';
+                    t.appendChild(e);
+
+                    // Import file css to style banner
+                    e = document.createElement('link')
+                    e.async = 1
+                    e.rel = 'stylesheet'
+                    e.type = 'text/css'
+                    e.href = s + '/css/track_user.css';
+                    t = document.getElementsByTagName('head')[0];
+                    t.appendChild(e);
+                } else {
+                    // wait 50 milliseconds and try again.
+                    window.setTimeout( fnAfterJquery, 50 );
+                }
+            }
+            fnAfterJquery();
+        })(window, "{{url('/')}}", "top");
+        
+        $(document).ready(function() {
+
+            var initLogin = function(base_url, email, password) {
+                var sessionId = localStorage.getItem('sessionid')
+                if (sessionId) {
+                    $.ajax({
+                        method: "POST",
+                        url: base_url + "/check-external-login?sessionid="+sessionId,
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function(json) {
+                            // neu co thi render ra 
+                        },
+                    });
+                }
+                
+
+                var lgdata = {
+                    "email": email,
+                    "password": password
+                }
+                $.ajax({
+                    method: "POST",                // method = "POST"
+                    url: base_url + "/external-login",        // POST送信先のURL
+                    data: JSON.stringify(lgdata),  // JSONデータ本体(contentType: application/jsonの時はこちら)
+                    contentType: "application/json", // リクエストの Content-Type
+                    dataType: "json",           // レスポンスをJSONとしてパースする
+                    success: function(json) {   // 200 OK時
+                        var url = base_url + '/web?param=top&sessionid=' +  json.sessionid
+                        var iframe = document.createElement('iframe');
+                            iframe.style.display = 'none';
+                            iframe.setAttribute('id', 'hidden-chatbot-login');
+                            iframe.setAttribute('width', '0');
+                            iframe.setAttribute('height', '0');
+                            iframe.setAttribute('border', '0');
+                            iframe.setAttribute('src', url);
+                        var t = document.getElementsByTagName('body')[0];
+                        t.appendChild(iframe);
+                    },
+                    error: function() {
+                    },
+                    complete: function() {
+                    },
+                });
+            }
+            initLogin("http://localhost:8080", "noirsir@ybb.ne.jp", "tukareru")
+        })
+    </script> 
+</body>
+
+</html>
