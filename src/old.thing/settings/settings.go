@@ -1,10 +1,9 @@
 package settings
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"strconv"
 )
 
 var environments = map[string]string{
@@ -32,15 +31,23 @@ func Init() {
 }
 
 func LoadSettingsByEnv(env string) {
-	content, err := ioutil.ReadFile(environments[env])
-	if err != nil {
-		fmt.Println("Error while reading config file", err)
-	}
+	// content, err := ioutil.ReadFile(environments[env])
+	// if err != nil {
+	// 	fmt.Println("Error while reading config file", err)
+	// }
 	settings = Settings{}
-	jsonErr := json.Unmarshal(content, &settings)
-	if jsonErr != nil {
-		fmt.Println("Error while parsing config file", jsonErr)
+	settings.PublicKeyPath = os.Getenv("PublicKeyPath")
+	settings.PrivateKeyPath = os.Getenv("PrivateKeyPath")
+	i, err := strconv.Atoi(os.Getenv("JWTExpirationDelta"))
+	if err != nil {
+		panic("Error setup key JWTExpirationDelta")
 	}
+	settings.JWTExpirationDelta = i
+
+	// jsonErr := json.Unmarshal(content, &settings)
+	// if jsonErr != nil {
+	// 	fmt.Println("Error while parsing config file", jsonErr)
+	// }
 }
 
 func GetEnvironment() string {

@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -16,7 +17,7 @@ var instanceRedisCli *RedisClient = nil
 func Redis_Connect() *RedisClient {
 	if instanceRedisCli == nil {
 		instanceRedisCli = &RedisClient{redis.NewClient(&redis.Options{
-			Addr:     "localhost:6379",
+			Addr:     os.Getenv("LINK_REDIS"),
 			Password: "", // no password set
 			DB:       0,  // use default DB
 		})}
