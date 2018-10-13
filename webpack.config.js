@@ -13,7 +13,7 @@ module.exports = {
         use: ['babel-loader']
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|css)$/,
         use: [
             {
               loader: "style-loader"
@@ -28,20 +28,27 @@ module.exports = {
               loader: 'sass-loader'
             }
         ]
-      }
+      },
+      {
+				test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+				loader: 'file-loader',
+				query: {
+					name: 'images/[name].[hash:8].[ext]'
+				}
+			},
     ]
   },
   resolve: {
     extensions: ['*', '.js', '.jsx']
   },
   output: {
-    path: __dirname + '/src/old.thing/dist/bundle',
+    path: __dirname + '/src/old.thing/dist',
     publicPath: '/',
     filename: '[name].js'
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: './src/old.thing/resources/amado', to: '../amado' },
+
     ])
   ],
 };
