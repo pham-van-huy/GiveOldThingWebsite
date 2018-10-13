@@ -27,7 +27,6 @@ var decoder *form.Decoder
 func PostCreate(w http.ResponseWriter, r *http.Request) {
 	decoder = form.NewDecoder()
 	r.ParseMultipartForm(32 << 20)
-
 	post := models.Post{}
 	err := decoder.Decode(&post, r.PostForm)
 
