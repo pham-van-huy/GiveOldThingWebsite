@@ -1,6 +1,8 @@
 package services
 
 import (
+	"os"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -16,7 +18,7 @@ func DB_Instance() *gorm.DB {
 }
 
 func DB_Open() *gorm.DB {
-	db, err := gorm.Open("mysql", "root:@/oldthing?charset=utf8&parseTime=True&loc=Local")
+	db, err := gorm.Open("mysql", os.Getenv("LINK_MYSQL"))
 	if err != nil {
 		return nil
 	}
