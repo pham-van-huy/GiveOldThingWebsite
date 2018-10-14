@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import _ from 'lodash'
-import ImageUploader from 'react-images-upload'
+import ImageUploader from '../externalCompo/react-images-upload'
 import './CreatePost.css'
 import { postApi } from "../helper"
 import MyMap from "./MyMap"
@@ -83,7 +83,7 @@ class CreatePost extends React.Component {
             </div>)
         }
         var cssBelowTitle = {
-            "margin-top": "14px"
+            marginTop: "14px"
         }
         return (
             <div className="container">

@@ -2,7 +2,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: [
-    './src/old.thing/resources/assets/js/reactjs/index.js',
+    './src/old.thing/resources/assets/reactjs/index.js',
     './src/old.thing/resources/assets/sass/app.scss'
   ],
   module: {
