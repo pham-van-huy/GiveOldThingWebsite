@@ -1,17 +1,11 @@
 import { getApi } from "../helper";
-export const atcListPost = () => {
-    return (dispatch => {
-        // dispatch(fetchProductsBegin());
-        getApi('/api/list-post').then(res => {
-            console.log(res)
-        })
-        .then(res => res.json())
-        .then(json => {
-            console.log(json.products)
+export const actListPost = () => {
+    return (dispatch) => {
+        getApi('/api/posts').then(json => {
             dispatch(fetchPostSuccess(json.products));
             return json.products;
         })
-    })()
+    }
 }
 
 export const fetchPostSuccess = posts => ({

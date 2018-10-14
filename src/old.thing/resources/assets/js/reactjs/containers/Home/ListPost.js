@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import DomListPost from '../../components/Home/ListPosts'
-import { atcListPost } from '../../actions/home.js'
+import { actListPost } from '../../actions/home.js'
 import { withRouter } from 'react-router-dom'
 
 const mapDispatchToProps = () => ({
-    funcGetListPost: () => atcListPost()
+    funcGetListPost: () => actListPost()
 })
 
 const mapStateToProps = state => ({
