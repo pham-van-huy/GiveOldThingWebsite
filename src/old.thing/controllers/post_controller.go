@@ -29,7 +29,6 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(32 << 20)
 	post := models.Post{}
 	err := decoder.Decode(&post, r.PostForm)
-
 	if err == nil {
 		// handle error
 		nur := NewPostRequest{Title: post.Title, Description: post.Description, UserId: post.UserId, CategoryId: post.CategoryId}
@@ -135,7 +134,7 @@ func PostUpdate(w http.ResponseWriter, r *http.Request) {
 func PostList(w http.ResponseWriter, r *http.Request) {
 	db := services.DB_Instance()
 	posts := []models.Post{}
-	db.Preload("Category").Limit(10).Find(&posts)
+	db.Preload("Category").Preload("Images", "owner_type = ?", models.TYPE_POST).Preload("City").Limit(10).Find(&posts)
 
 	ResSuccess(w, posts)
 }

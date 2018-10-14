@@ -4,7 +4,8 @@ import Select from 'react-select'
 import _ from 'lodash'
 import ImageUploader from 'react-images-upload'
 import './CreatePost.css'
-import { postApi } from "../helper";
+import { postApi } from "../helper"
+import MyMap from "./MyMap"
 
 class CreatePost extends React.Component {
     constructor(props) {
@@ -13,9 +14,9 @@ class CreatePost extends React.Component {
             title: "",
             description: "",
             cities: [],
-            selectedCity: 'select',
+            selectedCity: 0,
             categories: [],
-            selectedCate: 'select',
+            selectedCate: 0,
             images: [],
             isShowSuccess: false,
         };
@@ -81,56 +82,60 @@ class CreatePost extends React.Component {
                 <strong>Create successfully !!</strong>
             </div>)
         }
+        var cssBelowTitle = {
+            "margin-top": "14px"
+        }
         return (
             <div className="container">
-                <div className="col-md-6">
-                    <div className="page-header">
-                        <h1>Tạo tin</h1>
-                    </div>
-                    <form id="create-post" onSubmit={this.onSubmit.bind(this)}>
-                        {successMessage}
-                        <div className="row">
-                            <div className="city col-md-6">
-                                <select value={selectedCity} className="form-control" onChange={this.handleChangeCity.bind(this)}>
-                                    {
-                                        this.state.cities.map((val, i) => {
-                                            return (<option key={i} value={val.value}>{val.label}</option>)
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="category col-md-6">
-                                <select value={selectedCate} className="form-control" onChange={this.handleChangeCate.bind(this)}>
-                                    {
-                                        this.state.categories.map((val, i) => {
-                                            return (<option key={i} value={val.value}>{val.label}</option>)
-                                        })
-                                    }
-                                </select>
-                            </div>
+                <div className="row justify-content-center">
+                    <div className="col-md-6 center-block">
+                        <div className="page-header">
+                            <h1>Tạo tin</h1>
                         </div>
-                        <div className="form-row">
-                            <div className="form-group col-md-6">
-                                <label htmlFor="title">Title</label>
+                        <form id="create-post" onSubmit={this.onSubmit.bind(this)}>
+                            {successMessage}
+                            <div className="row">
+                                <div className="city col-md-6">
+                                    <select value={selectedCity} className="form-control" onChange={this.handleChangeCity.bind(this)}>
+                                        {
+                                            this.state.cities.map((val, i) => {
+                                                return (<option key={i} value={val.value}>{val.label}</option>)
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                                <div className="category col-md-6">
+                                    <select value={selectedCate} className="form-control" onChange={this.handleChangeCate.bind(this)}>
+                                        {
+                                            this.state.categories.map((val, i) => {
+                                                return (<option key={i} value={val.value}>{val.label}</option>)
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="form-group" style={cssBelowTitle}>
                                 <input type="text" name="title" onChange={this.onChangeTitle.bind(this)} className="form-control" id="title" placeholder="Tieu de" />
                             </div>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="description">Description</label>
-                            <textarea type="text" name="description" onChange={this.onChangeDes.bind(this)} className="form-control" id="description" placeholder="" />
-                        </div>
-                        <div className="form-group">
-                            <ImageUploader
-                                withPreview={true}
-                                withIcon={true}
-                                buttonText='Choose images'
-                                onChange={this.onDrop.bind(this)}
-                                imgExtension={['.jpg', '.gif', '.png', '.gif', '.jpeg']}
-                                maxFileSize={5242880}
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-primary">Create</button>
-                    </form>
+                            <div className="form-group">
+                                <textarea type="text" name="description" onChange={this.onChangeDes.bind(this)} className="form-control" id="description" placeholder="Mo ta" />
+                            </div>
+                            <div className="form-group">
+                                <ImageUploader
+                                    withPreview={true}
+                                    withIcon={true}
+                                    buttonText='Choose images'
+                                    onChange={this.onDrop.bind(this)}
+                                    imgExtension={['.jpg', '.gif', '.png', '.gif', '.jpeg']}
+                                    maxFileSize={5242880}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <MyMap />
+                            </div>
+                            <button type="submit" className="btn btn-primary">Create</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         );
