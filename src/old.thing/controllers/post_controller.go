@@ -5,11 +5,13 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/go-playground/form"
 	"github.com/gorilla/mux"
 	validator "gopkg.in/validator.v2"
+	paginator "old.thing/controllers/pagination"
 	"old.thing/models"
 	"old.thing/services"
 )
@@ -132,11 +134,25 @@ func PostUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostList(w http.ResponseWriter, r *http.Request) {
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	limit, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err == nil {
+		page = 1
+	}
+	if err1 == nil {
+		limit = 10
+	}
 	db := services.DB_Instance()
 	posts := []models.Post{}
-	db.Preload("Category").Preload("Images", "owner_type = ?", models.TYPE_POST).Preload("City").Limit(10).Find(&posts)
+	paginator := paginator.Pagging(&paginator.Param{
+		DB:      db.Preload("Category").Preload("Images", "owner_type = ?", models.TYPE_POST).Preload("City"),
+		Page:    page,
+		Limit:   limit,
+		OrderBy: []string{"ID desc"},
+		ShowSQL: true,
+	}, &posts)
 
-	ResSuccess(w, posts)
+	ResSuccess(w, paginator)
 }
 
 func PostEdit(w http.ResponseWriter, r *http.Request) {
