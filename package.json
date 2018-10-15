@@ -44,6 +44,7 @@
     "react-dom": "^16.5.2",
     "react-google-maps": "^9.4.5",
     "react-images-upload": "^1.2.3",
+    "react-paginate": "^5.2.4",
     "react-redux": "^5.0.7",
     "react-router-config": "^4.4.0-beta.1",
     "react-router-dom": "^4.3.1",
