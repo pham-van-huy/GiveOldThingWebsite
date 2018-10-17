@@ -1,7 +1,7 @@
 // import { Route } from 'react-router-dom'
 import Main from '../components/Main'
 import Home from '../components/Home'
-import AddTodo from '../containers/AddTodo'
+import Login from '../containers/Login-Container'
 import CreatePost from '../components/CreatePost'
 
 const routes = [
@@ -18,7 +18,8 @@ const routes = [
         //     component: GrandChild
         //   }
         // ]
-      }
+      },
+      {path: '/login', component: Login}
     ]
   }
 ]
