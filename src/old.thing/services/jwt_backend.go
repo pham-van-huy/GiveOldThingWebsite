@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"os"
 	"time"
 
@@ -53,7 +54,8 @@ func (backend *JWTAuthenticationBackend) GenerateToken(userUUID string) (string,
 }
 
 func (backend *JWTAuthenticationBackend) Authenticate(user *models.User) bool {
-	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	fmt.Println("hashpass", string(hashedPassword))
 	db := DB_Instance()
 	userAuth := models.User{}
 	db.Where("username = ?", user.Username).First(&userAuth)
