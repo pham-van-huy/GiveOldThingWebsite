@@ -18,7 +18,8 @@ func Init() {
 	// redis := s.Redis_Connect()
 
 	db.AutoMigrate(&m.User{})
-	user1 := m.User{Name: "Phan Ngoc", Username: "phann123", Password: "123", Address: "Da Nang"}
+	// real pass: 123
+	user1 := m.User{Name: "Phan Ngoc", Username: "phann123", Password: "$2a$10$kYEpDQa9l14Hlpy/vM6.AuHbSFuurppPOjJdBz7AZ3KQRUjPuCzMm", Address: "Da Nang"}
 	db.Create(&user1)
 
 	db.AutoMigrate(&m.Post{})

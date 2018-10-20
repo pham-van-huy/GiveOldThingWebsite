@@ -9,3 +9,4 @@ package-lock.json
 /src/old.thing/uploads
 /.vscode
 /src/old.thing/.env
+src/old.thing/tmp
