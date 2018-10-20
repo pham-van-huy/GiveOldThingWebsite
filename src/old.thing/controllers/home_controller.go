@@ -6,7 +6,7 @@ import (
 )
 
 func HomeIndex(w http.ResponseWriter, req *http.Request) {
-	tmpl, err := template.ParseFiles("resources/views/index.html")
+	tmpl, err := template.ParseFiles("resources/views/test-login-mylc.html")
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

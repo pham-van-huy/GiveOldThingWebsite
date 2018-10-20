@@ -1,21 +1,39 @@
 import React from 'react'
 import {lifecycle, withState} from 'recompose'
 import { getApi } from "../../helper"
+import ReactPaginate from 'react-paginate'
 
 class ListPosts extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        posts: []
+        posts: [],
+        total_page: 1,
+        perPage: 10,
+        page: 1,
       };
     }
-  
-    componentDidMount() {
-        getApi('/api/posts').then(response => {
+    loadPostsFromServer() {
+        var data = {
+            page: this.state.page,
+            limit: this.state.perPage,
+        }
+        getApi('/api/posts', data).then(response => {
             if (response.data.success) {
                 this.setState({ posts: response.data.data.records });
+                this.setState({ total_page: response.data.data.total_page });
             }
         })
+    }
+    componentDidMount() {
+        this.loadPostsFromServer()
+    }
+    handlePageClick(data) {
+        let selected = data.selected;
+    
+        this.setState({page: selected}, () => {
+          this.loadPostsFromServer();
+        });
     }
     render() {
         var listPostsElem = this.state.posts.map(post => {
@@ -44,9 +62,29 @@ class ListPosts extends React.Component {
             )
         });
         return (
-            <div className="row">
-                {listPostsElem}
-            </div>
+            <React.Fragment>
+                <div className="row">
+                    {listPostsElem}
+                </div>
+                <ReactPaginate previousLabel={"previous"}
+                    nextLabel={"next"}
+                    breakLabel={<a href="">...</a>}
+                    breakClassName={"break-me"}
+                    pageCount={this.state.total_page}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={this.handlePageClick}
+                    containerClassName={"pagination"}
+                    subContainerClassName={"pages pagination"}
+                    activeClassName={"active"} 
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    previousClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    nextClassName={"page-item"}
+                    nextLinkClassName={"page-link"}
+                    />
+            </React.Fragment>
         )
     }
 }

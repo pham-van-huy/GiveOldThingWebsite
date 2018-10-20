@@ -3,18 +3,14 @@
 
 <head>
     <title>Make world awesome!</title>
-    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/assets/bundle/app.css">
 </head>
 
 <body>
-    <div id="app">        
     </div> <!-- #app -->
     <a href="http://localhost:8080/web?param=param1" id="link-move">Vao chatbot</a>
     <!--/.container-->
     <script src="/assets/js/jquery-3.3.1.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/bundle/main.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -159,12 +155,12 @@
                                 e.href = base_url + "/css/track_user.css";
                                 t.appendChild(e);
                                 
-                                var link = base_url + '/web?param=top'
+                                var link = base_url + "/web?param=top"
                                 var template = ' \
                                     <p class="event-open" id="btnChatFix" data-messageid="" data-type_action=""> \
                                         <a href="'+link+'" target="_blank"> \
-                                            <img src="https://secure.lovecosmetic.net/images/btn_chat.png" alt="チャットで質問"> \
-                                            <span class="number-noti" style="display: none"> \
+                                            <img id="chatbot-img-icon" src="https://secure.lovecosmetic.net/images/btn_chat.png" alt="チャットで質問"> \
+                                            <span id="chatbot-number-noti" style="display: none"> \
                                                 <img src="'+base_url+'/img/icon_push-notifications_1.png" alt="チャットで質問" /> \
                                             </span> \
                                         </a> \
