@@ -34,6 +34,7 @@ class Login extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h2 className="text-center"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" className="img-circle" /><br/>Login</h2>
+                            <span className="row">For developement, after run seed, username: phann123, password: 123</span>
                         </div>
                         <div className="modal-body">
                             <form className="form col-md-12 center-block" onSubmit={this.handleSubmit.bind(this)}>

@@ -3,25 +3,30 @@ import Main from '../components/Main'
 import Home from '../components/Home'
 import Login from '../containers/login-container'
 import CreatePost from '../components/CreatePost'
+import NotAuthentication from '../components/NotAuthentication'
+import RequireAuth from '../components/RequireAuth'
 
 const routes = [
-  { component: Main,
-    routes: [
-      { path: '/',
-        exact: true,
-        component: Home
-      },
-      { path: '/posts/create',
-        component: CreatePost,
-        // routes: [
-        //   { path: '/child/:id/grand-child',
-        //     component: GrandChild
-        //   }
-        // ]
-      },
-      {path: '/login', component: Login}
-    ]
-  }
+    {
+        component: Main,
+        routes: [
+            {
+                path: '/',
+                exact: true,
+                component: NotAuthentication(Home)
+            },
+            {
+                path: '/posts/create',
+                component: RequireAuth(CreatePost),
+                // routes: [
+                //   { path: '/child/:id/grand-child',
+                //     component: GrandChild
+                //   }
+                // ]
+            },
+            { path: '/login', component: NotAuthentication(Login) }
+        ]
+    }
 ]
 
 export default routes

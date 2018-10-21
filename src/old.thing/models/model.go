@@ -94,6 +94,7 @@ type Post struct {
 	CategoryId  int `json:"CategoryId" form:"CategoryId"`
 	CityId      int `json:"CityId" form:"CityId"`
 	City        City
+	Price       int     `json:"Price" form:"Price"`
 	Images      []Image `gorm:"foreignkey:OwnerId"`
 	Description string  `json:"Description" form:"Description"`
 	Contact     string  `json:"Contact" form:"Contact"`
