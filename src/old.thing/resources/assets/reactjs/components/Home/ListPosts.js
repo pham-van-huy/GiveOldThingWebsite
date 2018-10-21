@@ -2,6 +2,7 @@ import React from 'react'
 import {lifecycle, withState} from 'recompose'
 import { getApi } from "../../helper"
 import ReactPaginate from 'react-paginate'
+import { Link, NavLink } from 'react-router-dom'
 
 class ListPosts extends React.Component {
     constructor(props) {
@@ -46,11 +47,13 @@ class ListPosts extends React.Component {
                     <div className="card">
                         <img className="card-img-top" src={firstImage} alt="Card image cap" />
                         <div className="card-body">
-                            <h4 className="card-title"><a href="product.html" title="View Product">{post.Title}</a></h4>
+                            <h4 className="card-title">
+                                <Link to={`/posts/` + post.ID} className="navbar-brand" title="View Product">{post.Title}</Link>
+                            </h4>
                             <p className="card-text">{post.Description}</p>
                             <div className="row">
                                 <div className="col">
-                                    <p className="btn btn-danger btn-block">99.00 $</p>
+                                    <p className="btn btn-danger btn-block">{post.Price}</p>
                                 </div>
                                 <div className="col">
                                     <a href="#" className="btn btn-success btn-block">Add to cart</a>

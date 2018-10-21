@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import _ from 'lodash'
 import ImageUploader from '../externalCompo/react-images-upload'
-import './CreatePost.css'
 import { postApi } from "../helper"
 import MyMap from "./MyMap"
 
@@ -15,6 +14,7 @@ class CreatePost extends React.Component {
             description: "",
             cities: [],
             selectedCity: 0,
+            price: 0,
             categories: [],
             selectedCate: 0,
             images: [],
@@ -67,12 +67,16 @@ class CreatePost extends React.Component {
             CityId: this.state.selectedCity,
             CategoryId: this.state.selectedCate,
             UserId: 1,
-            "Images[]": this.state.images
+            "Images[]": this.state.images,
+            Price: this.state.Price
         }
         postApi("/api/posts/create", opts, "formdata").then((response) => {
-            console.log('test 1', response)
             this.setState({isShowSuccess : true})
+            this.props.history.push('/')
         })
+    }
+    onChangePrice(e) {
+        this.setState({ price: e.target.value })
     }
     render() {
         var { selectedCity, selectedCate } = this.state
@@ -119,6 +123,9 @@ class CreatePost extends React.Component {
                             </div>
                             <div className="form-group">
                                 <textarea type="text" name="description" onChange={this.onChangeDes.bind(this)} className="form-control" id="description" placeholder="Mo ta" />
+                            </div>
+                            <div className="form-group">
+                                <input type="number" name="price" onChange={this.onChangePrice.bind(this)} className="form-control" id="price" placeholder="Price" />
                             </div>
                             <div className="form-group">
                                 <ImageUploader
