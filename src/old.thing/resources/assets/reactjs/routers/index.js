@@ -3,6 +3,7 @@ import Main from '../components/Main'
 import Home from '../components/Home'
 import Login from '../containers/login-container'
 import CreatePost from '../components/CreatePost'
+import DetailPost from '../components/DetailPost'
 import NotAuthentication from '../components/NotAuthentication'
 import RequireAuth from '../components/RequireAuth'
 
@@ -18,6 +19,15 @@ const routes = [
             {
                 path: '/posts/create',
                 component: RequireAuth(CreatePost),
+                // routes: [
+                //   { path: '/child/:id/grand-child',
+                //     component: GrandChild
+                //   }
+                // ]
+            },
+            {
+                path: '/posts/:id',
+                component: DetailPost,
                 // routes: [
                 //   { path: '/child/:id/grand-child',
                 //     component: GrandChild
