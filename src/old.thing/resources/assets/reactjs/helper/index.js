@@ -21,11 +21,12 @@ export const postApi = (url = '', data = {}, type = 'json', isAuthen = true) => 
         }
     }
 
-    if (token != null && isAuthen) {
-        headers["Authorization"] = "Bearer " + token
-    } else {
-        token = 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mzk2ODc2NDgsImlhdCI6MTUzOTQyODQ0OCwic3ViIjoiMCJ9.dP7DKwkUHxQJ8dhYWwtdDwEkhzQAkYXfzOlewhDcj4-9URMRkAwGDRLHFagsySAdI0pk1y32GA5tkWkSAFT7fbAiEnciSKsWinJdr2TGWNgTVvISUWyf_-mMAWem_vVf30ajt3W0R5zPoRvgziro8jn4pIPd3rkecSKxz-l_mdhlw21kF9r2qa18RWTU2AblEryrkJAQsO-z791zO_6Eb5ZzcoDu6m5W9696eD8FuUj-Inj5pfYYZZQtLs0x-jEaXP9zuli_JevHl5bQ4VW-iJXImjiMnl5CQ99IMqz0LsGT6Uaivmmsw1gyyeo58r7yCNilhZNAjr4a1NUIKvevBQ'
-        headers["Authorization"] = "Bearer " + token
+    if (isAuthen) {
+        if (token == null) {
+            return Promise.reject(new Error('need token'))
+        } else {
+            headers["Authorization"] = "Bearer " + token
+        }
     }
 
     return axios({
@@ -36,7 +37,7 @@ export const postApi = (url = '', data = {}, type = 'json', isAuthen = true) => 
     })
 }
 
-export const getApi = (url = '', data = {}, type = 'json') => {
+export const getApi = (url = '', data = {}, type = 'json', isAuthen = true) => {
     var token = localStorage.getItem("token")
     var headers = {}
     var dataPush = null
@@ -57,11 +58,12 @@ export const getApi = (url = '', data = {}, type = 'json') => {
         }
     }
 
-    if (token != null) {
-        headers["Authorization"] = "Bearer " + token
-    } else {
-        token = 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mzk2ODc2NDgsImlhdCI6MTUzOTQyODQ0OCwic3ViIjoiMCJ9.dP7DKwkUHxQJ8dhYWwtdDwEkhzQAkYXfzOlewhDcj4-9URMRkAwGDRLHFagsySAdI0pk1y32GA5tkWkSAFT7fbAiEnciSKsWinJdr2TGWNgTVvISUWyf_-mMAWem_vVf30ajt3W0R5zPoRvgziro8jn4pIPd3rkecSKxz-l_mdhlw21kF9r2qa18RWTU2AblEryrkJAQsO-z791zO_6Eb5ZzcoDu6m5W9696eD8FuUj-Inj5pfYYZZQtLs0x-jEaXP9zuli_JevHl5bQ4VW-iJXImjiMnl5CQ99IMqz0LsGT6Uaivmmsw1gyyeo58r7yCNilhZNAjr4a1NUIKvevBQ'
-        headers["Authorization"] = "Bearer " + token
+    if (isAuthen) {
+        if (token == null) {
+            return Promise.reject(new Error('need token'))
+        } else {
+            headers["Authorization"] = "Bearer " + token
+        }
     }
 
     return axios({
