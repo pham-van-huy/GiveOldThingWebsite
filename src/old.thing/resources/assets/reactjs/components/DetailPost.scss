@@ -128,3 +128,16 @@
 .service-image-left > center > img,.service-image-right > center > img{
 	max-height: 155px;
 }
+#info-product {
+	.price{
+		color: #c90927;
+		font-size: 16px;
+		font-weight: bold;
+	}
+	.phone{
+		font-size: 18px;
+		padding-top: 10px;
+		color: #777777;
+		line-height: 16px;
+	}
+}

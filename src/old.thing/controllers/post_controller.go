@@ -159,7 +159,7 @@ func PostEdit(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	post := models.Post{}
 	db := services.DB_Instance()
-	db.First(&post, id)
+	db.Preload("Category").Preload("Images", "owner_type = ?", models.TYPE_POST).Preload("City").First(&post, id)
 	ResSuccess(w, post)
 }
 

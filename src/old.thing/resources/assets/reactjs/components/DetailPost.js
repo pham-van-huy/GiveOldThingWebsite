@@ -1,27 +1,108 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import Select from 'react-select'
 import _ from 'lodash'
 import ImageUploader from '../externalCompo/react-images-upload'
-import { postApi } from "../helper"
+import { postApi, getApi } from '../helper'
 import MyMap from "./MyMap"
 import './DetailPost.scss'
-import Slider from "react-slick"
+import Slider from 'react-slick'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+class Responsive extends React.Component {
+    render() {
+        var settings = {
+            dots: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 4,
+            slidesToScroll: 4,
+            initialSlide: 0,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        infinite: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2,
+                        initialSlide: 2
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        };
+        return (
+            <div>
+                <h2> Responsive </h2>
+                <Slider {...settings}>
+                    <div>
+                        <h3>1</h3>
+                    </div>
+                    <div>
+                        <h3>2</h3>
+                    </div>
+                    <div>
+                        <h3>3</h3>
+                    </div>
+                    <div>
+                        <h3>4</h3>
+                    </div>
+                    <div>
+                        <h3>5</h3>
+                    </div>
+                    <div>
+                        <h3>6</h3>
+                    </div>
+                    <div>
+                        <h3>7</h3>
+                    </div>
+                    <div>
+                        <h3>8</h3>
+                    </div>
+                </Slider>
+            </div>
+        );
+    }
+}
 
 class DetailPost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: "",
-            description: "",
-            selectedCity: 0,
-            price: 0,
-            selectedCate: 0,
-            images: [],
-            isShowSuccess: false,
+            ID: 0,
+            Title: "",
+            Description: "",
+            SelectedCity: 0,
+            Price: 0,
+            SelectedCate: 0,
+            Images: [],
+            IsShowSuccess: false,
         };
     }
     componentDidMount() {
+        const { params } = this.props.match;
+        getApi('/api/posts/' + params.id, 'json', false).then((response) => {
+            if (response.status == 200 && response.data.success) {
+                var post = response.data.data
+                var generalAttri = _.pick(post, ['ID', 'Title', 'Description', 'Price', 'Images']);
+                this.setState(generalAttri)
+            }
+        })
     }
     render() {
         var settings = {
@@ -31,54 +112,29 @@ class DetailPost extends React.Component {
             slidesToShow: 1,
             slidesToScroll: 1
         };
-
+        var listImageCompo = this.state.Images.map((value, key) => {
+            var src = "/uploads/" + value.Link
+            return (
+                <div key={key} style={{height : "340px"}}>
+                    <img className="image-slide" src={src} style={{height : "340px"}}/>
+                </div>
+            )
+        })
         return (
             <React.Fragment>
-                <div className="container">
-                    <Slider {...settings}>
-                        <div>
-                            <h3>1</h3>
-                        </div>
-                        <div>
-                            <h3>2</h3>
-                        </div>
-                        <div>
-                            <h3>3</h3>
-                        </div>
-                        <div>
-                            <h3>4</h3>
-                        </div>
-                        <div>
-                            <h3>5</h3>
-                        </div>
-                        <div>
-                            <h3>6</h3>
-                        </div>
-                    </Slider>
+                <div className="container-fluid" id="info-product">
                     <div className="row">
-                        <div className="col-md-8">
-                            <div className="product-title">Corsair GS600 600 Watt PSU</div>
-                            <div className="product-desc">The Corsair Gaming Series GS600 is the ideal price/performance choice for mid-spec gaming PC</div>
-                            <div className="product-rating">
-                                <i className="fa fa-star gold"></i>
-                                <i className="fa fa-star gold"></i>
-                                <i className="fa fa-star gold"></i>
-                                <i className="fa fa-star gold"></i>
-                                <i className="fa fa-star-o"></i>
-                            </div>
-                            <hr />
-                            <div className="product-price">$ 1234.00</div>
-                            <div className="product-stock">In Stock</div>
-                            <hr />
-                            <div className="btn-group cart">
-                                <button type="button" className="btn btn-success">
-                                    Add to cart
-						</button>
-                            </div>
-                            <div className="btn-group wishlist">
-                                <button type="button" className="btn btn-danger">
-                                    Add to bookmark
-						</button>
+                        <Slider {...settings} className="w-100">
+                            {listImageCompo}
+                        </Slider>
+                    
+                        <div className="card w-100">
+                            <div className="card-body">
+                                <h5 className="card-title">{this.state.Title}</h5>
+                                <p className="card-text">{this.state.Description}</p>
+                                <p className="card-text price"><FontAwesomeIcon icon={['fas', 'money-bill-alt']} /> {this.state.Price + ' D'}</p>
+                                <p className="card-text phone"><FontAwesomeIcon icon={['fas', 'phone']} /> <strong>{'0932047956'}</strong></p>
+                                <a href="#" className="btn btn-primary">Add to bookmark</a>
                             </div>
                         </div>
                     </div>
@@ -126,4 +182,14 @@ class DetailPost extends React.Component {
     }
 }
 
-export default DetailPost
+const mapDispatchToProps = (dispatch) => ({
+
+})
+
+const mapStateToProps = state => ({
+})
+
+export default withRouter(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DetailPost))
