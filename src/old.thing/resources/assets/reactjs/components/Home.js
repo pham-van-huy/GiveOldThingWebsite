@@ -4,10 +4,12 @@ import Sidebar from './Sidebar.js'
 import ListPost from "../containers/Home/ListPost";
 
 const Home = () => (
-    <div className="row">
-        <Sidebar />
-        <div className="col">
-            <ListPost />
+    <div className="container-fluid">
+        <div className="row">
+            <Sidebar />
+            <div className="col">
+                <ListPost />
+            </div>
         </div>
     </div>
 )

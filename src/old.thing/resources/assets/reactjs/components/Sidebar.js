@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 const Sidebar = () => (
-    <div className="col-12 col-sm-3" id="sidebar">
+    <div className="col-md-3" id="sidebar">
         <div className="card bg-light mb-3">
             <div className="card-header bg-primary text-white text-uppercase"><i className="fa fa-list"></i> Categories</div>
             <ul className="list-group category_block">
