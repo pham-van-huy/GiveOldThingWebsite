@@ -16,12 +16,19 @@ type TokenAuthentication struct {
 
 func Login(requestUser *models.User) (int, []byte) {
 	authBackend := InitJWTAuthenticationBackend()
-	if authBackend.Authenticate(requestUser) {
+	infoUser, isAuth := authBackend.Authenticate(requestUser)
+
+	if isAuth {
 		token, err := authBackend.GenerateToken(strconv.Itoa(requestUser.ID))
+
 		if err != nil {
 			return http.StatusInternalServerError, []byte("")
 		} else {
-			response, _ := json.Marshal(TokenAuthentication{token})
+			result := map[string]interface{}{
+				"token":    token,
+				"infoUser": infoUser,
+			}
+			response, _ := json.Marshal(result)
 			return http.StatusOK, response
 		}
 	}
