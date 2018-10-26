@@ -53,14 +53,26 @@ func (backend *JWTAuthenticationBackend) GenerateToken(userUUID string) (string,
 	return tokenString, nil
 }
 
-func (backend *JWTAuthenticationBackend) Authenticate(user *models.User) bool {
+func (backend *JWTAuthenticationBackend) Authenticate(user *models.User) (interface{}, bool) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	fmt.Println("hashpass", string(hashedPassword))
 	db := DB_Instance()
 	userAuth := models.User{}
 	db.Where("username = ?", user.Username).First(&userAuth)
 	err := bcrypt.CompareHashAndPassword([]byte(userAuth.Password), []byte(user.Password))
-	return &userAuth != nil && err == nil
+	isAuth := &userAuth != nil && err == nil
+	if err == nil {
+		infoUser := map[string]interface{}{
+			"name":  userAuth.Name,
+			"id":    userAuth.ID,
+			"email": userAuth.Email,
+		}
+
+		return infoUser, isAuth
+	} else {
+		return nil, isAuth
+	}
+
 }
 
 func (backend *JWTAuthenticationBackend) getTokenRemainingValidity(timestamp interface{}) int {

@@ -15,7 +15,7 @@ class Login extends React.Component {
         this.setState({password: e.target.value})
     }
     componentDidMount(){
-        
+
     }
     handleSubmit(e) {
         e.preventDefault()
@@ -25,6 +25,7 @@ class Login extends React.Component {
         }
         postApi('/token-auth', data, 'json', false).then((response) => {
             this.props.saveToken(response.data.token)
+            this.props.saveInfoUser(response.data.infoUser)
         })
     }
     render() {

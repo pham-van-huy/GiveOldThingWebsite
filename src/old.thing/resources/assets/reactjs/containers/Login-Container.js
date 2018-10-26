@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import Login from '../components/Login'
 import { withRouter } from 'react-router-dom'
-import {saveToken} from '../reduces/login-reduce'
+import { saveToken, saveInfoUser} from '../reduces/login-reduce'
 
 const mapDispatchToProps = (dispatch) => ({
-    saveToken: token => dispatch(saveToken(token))
+    saveToken: token => dispatch(saveToken(token)),
+    saveInfoUser: infor => dispatch(saveInfoUser(infor))
 })
 
 const mapStateToProps = state => ({
