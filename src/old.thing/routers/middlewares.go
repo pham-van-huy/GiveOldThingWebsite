@@ -36,6 +36,7 @@ func SocketRouter(router *mux.Router) *mux.Router {
 
 func SetAuthenticationRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/token-auth", controllers.Login).Methods("POST")
+	router.HandleFunc("/registry", controllers.Registry).Methods("POST")
 	router.Handle("/refresh-token-auth",
 		negroni.New(
 			negroni.HandlerFunc(RequireTokenAuthentication),

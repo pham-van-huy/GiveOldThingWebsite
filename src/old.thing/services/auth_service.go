@@ -7,6 +7,7 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	request "github.com/dgrijalva/jwt-go/request"
+	"golang.org/x/crypto/bcrypt"
 	models "old.thing/models"
 )
 
@@ -59,4 +60,14 @@ func Logout(req *http.Request) error {
 	}
 	tokenString := req.Header.Get("Authorization")
 	return authBackend.Logout(tokenString, tokenRequest)
+}
+
+func Registry(user *models.User) bool {
+	db := DB_Instance()
+	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	user.Password = string(hashPassword)
+	result := db.NewRecord(&user)
+	db.Create(user)
+
+	return result
 }

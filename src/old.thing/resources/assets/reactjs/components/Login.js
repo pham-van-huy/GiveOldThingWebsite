@@ -1,5 +1,6 @@
 import React from 'react'
 import {postApi} from '../helper'
+import { Link } from 'react-router-dom'
 class Login extends React.Component {
     constructor(props) {
         super(props)
@@ -24,11 +25,17 @@ class Login extends React.Component {
             Password: this.state.password
         }
         postApi('/token-auth', data, 'json', false).then((response) => {
-            this.props.saveToken(response.data.token)
             this.props.saveInfoUser(response.data.infoUser)
+            this.props.saveToken(response.data.token)
         })
     }
     render() {
+        let message = ''
+        if (this.props.history.location.state && this.props.history.location.state.message) {
+            message = (
+                <p style={{ color: "#267bff"}}>{this.props.history.location.state.message}</p>
+            )
+        }
         return (
             <div id="loginModal" className="modal show" tabIndex="-1" role="dialog" aria-hidden="true">
                 <div className="modal-dialog">
@@ -39,6 +46,7 @@ class Login extends React.Component {
                         </div>
                         <div className="modal-body">
                             <form className="form col-md-12 center-block" onSubmit={this.handleSubmit.bind(this)}>
+                                {message}
                                 <div className="form-group">
                                     <input value={this.state.username} onChange={this.handleChangeEmail.bind(this)} type="text" className="form-control input-lg" placeholder="Email" />
                                 </div>
@@ -47,7 +55,7 @@ class Login extends React.Component {
                                 </div>
                                 <div className="form-group">
                                     <button type="submit" className="btn btn-primary btn-lg btn-block">Sign In</button>
-                                    <span className="pull-right"><a href="#">Register</a></span><span><a href="#">Need help?</a></span>
+                                    <span className="pull-right"><Link to="/registry">Register</Link></span><span><a href="#">Need help?</a></span>
                                 </div>
                             </form>
                         </div>

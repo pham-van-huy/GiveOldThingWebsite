@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"old.thing/services"
 
@@ -36,5 +37,30 @@ func Logout(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
 		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func Registry(w http.ResponseWriter, r *http.Request) {
+	user := new(m.User)
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(user)
+	user.Birthday = time.Now()
+	result := services.Registry(user)
+	w.Header().Set("Content-Type", "application/json")
+
+	if result {
+		w.WriteHeader(http.StatusOK)
+		data := map[string]interface{}{
+			"message": "Registry successfuly!",
+		}
+		message, _ := json.Marshal(data)
+		w.Write(message)
+	} else {
+		w.WriteHeader(http.StatusInternalServerError)
+		data := map[string]interface{}{
+			"message": "Registry fail! Please try again!",
+		}
+		message, _ := json.Marshal(data)
+		w.Write(message)
 	}
 }
