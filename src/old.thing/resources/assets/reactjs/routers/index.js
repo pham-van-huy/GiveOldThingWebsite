@@ -6,6 +6,7 @@ import CreatePost from '../components/CreatePost'
 import DetailPost from '../components/DetailPost'
 import NotAuthentication from '../components/NotAuthentication'
 import RequireAuth from '../components/RequireAuth'
+import Registry from '../components/Registry'
 
 const routes = [
     {
@@ -24,7 +25,8 @@ const routes = [
                 path: '/posts/:id',
                 component: DetailPost,
             },
-            { path: '/login', component: NotAuthentication(Login) }
+            { path: '/login', component: NotAuthentication(Login) },
+            { path: '/registry', component: NotAuthentication(Registry) }
         ]
     }
 ]
