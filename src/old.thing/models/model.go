@@ -100,6 +100,7 @@ type Post struct {
 	Contact     string  `json:"Contact" form:"Contact"`
 	Lat         float64 `json:"Lat" form:"Lat"`
 	Lng         float64 `json:"Lng" form:"Lng"`
+	Action      int     `json:"Action" form:"Action"`
 }
 
 func (Post) TableName() string {

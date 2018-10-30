@@ -2,9 +2,10 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import _ from 'lodash'
-import ImageUploader from '../externalCompo/react-images-upload'
-import { postApi } from "../helper"
-import MyMap from "./MyMap"
+import ImageUploader from '../../externalCompo/react-images-upload'
+import { postApi } from "../../helper"
+import MyMap from '../MyMap'
+import GroupCheckbox from './GroupCheckbox'
 
 class CreatePost extends React.Component {
     constructor(props) {
@@ -19,6 +20,17 @@ class CreatePost extends React.Component {
             selectedCate: 0,
             images: [],
             isShowSuccess: false,
+            optionAction: [
+                {
+                    value: 0,
+                    label: 'Cần bán',
+                },
+                {
+                    value: 1,
+                    label: 'Cần mua',
+                }
+            ],
+            Action: 0,
         };
     }
     onDrop(pictureFiles, pictureDataURLs) {
@@ -68,7 +80,8 @@ class CreatePost extends React.Component {
             CategoryId: this.state.selectedCate,
             UserId: 1,
             "Images[]": this.state.images,
-            Price: this.state.Price
+            Price: this.state.price,
+            Action: this.state.Action,
         }
         postApi("/api/posts/create", opts, "formdata").then((response) => {
             this.setState({isShowSuccess : true})
@@ -76,7 +89,10 @@ class CreatePost extends React.Component {
         })
     }
     onChangePrice(e) {
-        this.setState({ price: e.target.value })
+        this.setState({ Price: e.target.value })
+    }
+    onChangeAction(e) {
+        this.setState({ Action: e.target.value })
     }
     render() {
         var { selectedCity, selectedCate } = this.state
@@ -98,7 +114,7 @@ class CreatePost extends React.Component {
                         </div>
                         <form id="create-post" onSubmit={this.onSubmit.bind(this)}>
                             {successMessage}
-                            <div className="row">
+                            <div className="form-row">
                                 <div className="city col-md-6">
                                     <select value={selectedCity} className="form-control" onChange={this.handleChangeCity.bind(this)}>
                                         {
@@ -118,14 +134,17 @@ class CreatePost extends React.Component {
                                     </select>
                                 </div>
                             </div>
+                            <div className="form-group">
+                                <GroupCheckbox onCheck={this.onChangeAction.bind(this)} data={this.state.optionAction} />
+                            </div>
                             <div className="form-group" style={cssBelowTitle}>
-                                <input type="text" name="title" onChange={this.onChangeTitle.bind(this)} className="form-control" id="title" placeholder="Tieu de" />
+                                <input type="text" name="title" onChange={this.onChangeTitle.bind(this)} className="form-control form-control-lg" id="title" placeholder="Tieu de" />
                             </div>
                             <div className="form-group">
-                                <textarea type="text" name="description" onChange={this.onChangeDes.bind(this)} className="form-control" id="description" placeholder="Mo ta" />
+                                <textarea type="text" name="description" onChange={this.onChangeDes.bind(this)} className="form-control form-control-lg" id="description" placeholder="Mo ta" />
                             </div>
                             <div className="form-group">
-                                <input type="number" name="price" onChange={this.onChangePrice.bind(this)} className="form-control" id="price" placeholder="Price" />
+                                <input type="number" name="price" onChange={this.onChangePrice.bind(this)} className="form-control form-control-lg" id="price" placeholder="Price" />
                             </div>
                             <div className="form-group">
                                 <ImageUploader
