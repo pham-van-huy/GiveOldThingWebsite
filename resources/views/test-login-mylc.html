@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Make world awesome!</title>
+</head>
+
+<body>
+    </div> <!-- #app -->
+    <a href="http://localhost:8080/web?param=param1" id="link-move">Vao chatbot</a>
+    <!--/.container-->
+    <script src="/assets/js/jquery-3.3.1.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var fnInsertIframe = function(base_url, _args) {
+                var dfIframe = $.Deferred();
+                _args.param = "top"
+                var url = base_url + "/web?" +  $.param(_args)
+                if ($("#hidden-chatbot").length == 0) {
+                    var iframe = document.createElement("iframe");
+                        iframe.style.display = "none";
+                        iframe.setAttribute("id", "hidden-chatbot");
+                        iframe.setAttribute('width', '0');
+                        iframe.setAttribute('height', '0');
+                        iframe.setAttribute('border', '0');
+                        iframe.setAttribute('src', url);
+                    var t = document.getElementsByTagName('body')[0];
+                    t.appendChild(iframe);
+                } else {
+                    $("iframe").attr('src', url);
+                }
+                dfIframe.resolve(true)
+                return $.when(dfIframe.promise())
+            }
+
+            var checkInitLogin = function(base_url, email, password) {
+                var dfd = $.Deferred();
+                var loginFunc = function() {
+                    var lgdata = {
+                        "email": email,
+                        "password": password
+                    }
+                    $.ajax({
+                        method: "POST",
+                        url: base_url + "/external-login",
+                        data: JSON.stringify(lgdata),
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function(response) {
+                            if (response.success) {
+                                localStorage.setItem("sessionid", response.data.sessionid)
+                                var _args = {
+                                    param : "top", 
+                                    sessionid: 
+                                    response.data.sessionid,
+                                    page_url: window.location.href,
+                                    referrer_url: document.referrer,
+                                }
+                                fnInsertIframe(base_url, _args).then((response) => {
+                                    dfd.resolve({success: true})
+                                })
+                            } else {
+                                dfd.resolve({success: false})
+                            }
+                        },
+                        error: function() {
+                            dfd.resolve({success: false, messages: ["Unauthorized"]})
+                        }
+                    });
+                }
+
+                var fnCheckLogin = function(sessionid) {
+                    return $.ajax({
+                        method: "POST",
+                        url: base_url + "/check-external-login",
+                        data: JSON.stringify({sessionid: sessionid}),
+                        contentType: "application/json",
+                        dataType: "json",
+                    })
+                }
+
+                var sessionId = localStorage.getItem("sessionid")
+                if (sessionId) {
+                    fnCheckLogin(sessionId).done(function(response) {
+                        if (response.status == 401) {
+                            loginFunc(base_url, email, password)
+                        } else {
+                            dfd.resolve(response)
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        dfd.resolve({success: false, messages: [textStatus]})
+                    });
+                } else {
+                    loginFunc(base_url, email, password)
+                }
+
+                return $.when(dfd.promise()); 
+            }
+
+            var sequenceCheck = function(base_url, email, password, isLoadIcon) {
+                var isLoadIcon = (typeof isLoadIcon == "undefined") ? false : isLoadIcon
+                var deferSequence = $.Deferred()
+                var fnAppendJquery = function() {
+                    var defJquery = jQuery.Deferred();
+                    if (typeof $ === "undefined") {
+                        var e = document.createElement("script");
+                        var t = document.getElementsByTagName("head")[0];
+
+                        e.async = 1;
+                        e.src = base_url + "/js/jquery.min.js";
+                        
+                        t.parentNode.appendChild(e);
+                        var fnCheckJq = () => {
+                            window.setTimeout(() => {
+                                if (typeof $ === "undefined") {
+                                    fnCheckJq()
+                                } else {
+                                    defJquery.resolve(true)
+                                }
+                            }, 50 );
+                        }
+                    } else {
+                        defJquery.resolve(true)  
+                    }
+
+                    return $.when(defJquery.promise()); 
+                }
+
+                fnAppendJquery().then(function(response) {
+                    if (response) {
+                        return checkInitLogin(base_url, email, password)
+                    } else {
+                        deferSequence.resolve(false)
+                    }
+                }).then(function(response) {
+                    if (response.success) {
+                        if (isLoadIcon) {
+                            var args = {page_url: window.location.href, referrer_url: document.referrer}
+                            fnInsertIframe(base_url, args).then(function(response) {
+                                var e = document.createElement("script");
+                                var t = document.getElementsByTagName("head")[0];
+                                var body = document.getElementsByTagName("body")[0];
+                                // Import process event in page
+                                e = document.createElement("script");
+                                e.async = 1;
+                                e.src = base_url + "/js/event_page.js";
+                                t.appendChild(e);
+                                // Import file css to style banner
+                                e = document.createElement("link")
+                                e.async = 1
+                                e.rel = "stylesheet"
+                                e.type = "text/css"
+                                e.href = base_url + "/css/track_user.css";
+                                t.appendChild(e);
+                                
+                                var link = base_url + "/web?param=top"
+                                var template = ' \
+                                    <p class="event-open" id="btnChatFix" data-messageid="" data-type_action=""> \
+                                        <a href="'+link+'" target="_blank"> \
+                                            <img id="chatbot-img-icon" src="https://secure.lovecosmetic.net/images/btn_chat.png" alt="チャットで質問"> \
+                                            <span id="chatbot-number-noti" style="display: none"> \
+                                                <img src="'+base_url+'/img/icon_push-notifications_1.png" alt="チャットで質問" /> \
+                                            </span> \
+                                        </a> \
+                                    </p> \
+                                '
+                                
+                                $("body").append(template)
+                                deferSequence.resolve(true)
+                            });
+                        } else {
+                            deferSequence.resolve(true)
+                        }
+                    } else {
+                        deferSequence.resolve(false)
+                    }
+                })
+
+                return deferSequence.promise()
+            }
+            sequenceCheck("http://localhost:8080", "noirsir@ybb.ne.jp", "tukareru", true).then((response) => {
+                console.log('check 1', response)
+            })
+        })
+    </script> 
+</body>
+
+</html>

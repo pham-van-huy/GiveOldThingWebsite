@@ -1,0 +1,65 @@
+{
+  "name": "give_old_thing_website",
+  "version": "1.0.0",
+  "description": "Link setup server web local golang: https://evanbyrne.com/blog/go-production-server-ubuntu-nginx",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --mode=development --watch",
+    "prod": "webpack --mode=production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pham-van-huy/GiveOldThingWebsite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pham-van-huy/GiveOldThingWebsite/issues"
+  },
+  "homepage": "https://github.com/pham-van-huy/GiveOldThingWebsite#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "autoprefixer": "^9.1.5",
+    "babel-loader": "^8.0.4",
+    "copy-webpack-plugin": "^4.5.2",
+    "css-url-loader": "^1.1.1",
+    "extract-loader": "^3.0.0",
+    "file-loader": "^2.0.0",
+    "mini-css-extract-plugin": "^0.4.4",
+    "node-sass": "^4.9.3",
+    "postcss-loader": "^3.0.0",
+    "react-router": "^4.3.1",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.6",
+    "@fortawesome/free-solid-svg-icons": "^5.4.1",
+    "@fortawesome/react-fontawesome": "^0.1.3",
+    "axios": "^0.18.0",
+    "classnames": "^2.2.6",
+    "css-loader": "^1.0.0",
+    "lodash": "^4.17.11",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-google-maps": "^9.4.5",
+    "react-images-upload": "^1.2.3",
+    "react-paginate": "^5.2.4",
+    "react-redux": "^5.0.7",
+    "react-router-config": "^4.4.0-beta.1",
+    "react-router-dom": "^4.3.1",
+    "react-select": "^2.1.0",
+    "react-slick": "^0.23.2",
+    "recompose": "^0.30.0",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0",
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^4.0.2"
+  }
+}

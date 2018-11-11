@@ -1,0 +1,9 @@
+/pkg
+/bin
+/node_modules
+package-lock.json
+/dist
+/uploads
+/.vscode
+/.env
+/tmp
