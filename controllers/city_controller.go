@@ -1,16 +1,18 @@
 package controllers
 
 import (
-	"net/http"
-
 	"bombay.com/old.thing/models"
 	"bombay.com/old.thing/services"
+	handler "bombay.com/old.thing/tigoweb"
 )
 
-// PostCreate create post
-func CityList(w http.ResponseWriter, r *http.Request) {
+type CityHandler struct {
+	handler.BaseHandler
+}
+
+func (cityHandler *CityHandler) Get() {
 	db := services.DB_Instance()
 	cities := []models.City{}
 	db.Find(&cities)
-	ResSuccess(w, cities)
+	cityHandler.ResponseAsJson(WrapSucc(cities))
 }

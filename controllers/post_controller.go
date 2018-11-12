@@ -16,13 +16,6 @@ import (
 	validator "gopkg.in/validator.v2"
 )
 
-type NewPostRequest struct {
-	Title       string `validate:"min=3,max=100"`
-	Description string `validate:"min=3,max=1000"`
-	UserId      int    `validate:nonzero`
-	CategoryId  int    `validate:nonzero`
-}
-
 var decoder *form.Decoder
 
 // PostCreate create post
@@ -33,9 +26,8 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&post, r.PostForm)
 	if err == nil {
 		// handle error
-		nur := NewPostRequest{Title: post.Title, Description: post.Description, UserId: post.UserId, CategoryId: post.CategoryId}
 
-		if errs := validator.Validate(nur); errs != nil {
+		if errs := validator.Validate(models.Post{}); errs != nil {
 			ResErrors(w, errs)
 		}
 		db := services.DB_Instance()
@@ -118,9 +110,7 @@ func PostUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	request := NewPostRequest{Title: post.Title, Description: post.Description, UserId: post.UserId, CategoryId: post.CategoryId}
-
-	if errs := validator.Validate(request); errs != nil {
+	if errs := validator.Validate(models.Post{}); errs != nil {
 		ResErrors(w, errs)
 	}
 

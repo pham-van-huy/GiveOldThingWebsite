@@ -6,13 +6,13 @@ import (
 	handler "bombay.com/old.thing/tigoweb"
 )
 
-type CateHandler struct {
+type BookmarkHandler struct {
 	handler.BaseHandler
 }
 
-func (cateHandler *CateHandler) Get() {
+func (bookmarkHandler *BookmarkHandler) Create() {
 	db := services.DB_Instance()
-	categories := []models.Category{}
-	db.Find(&categories)
-	cateHandler.ResponseAsJson(WrapSucc(categories))
+	bookmarks := models.BookMark{}
+	db.Find(&bookmarks)
+	bookmarkHandler.ResponseAsJson(WrapSucc(bookmarks))
 }
