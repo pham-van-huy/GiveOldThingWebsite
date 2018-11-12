@@ -48,6 +48,7 @@ class CreatePost extends React.Component {
         var options = [];
 
         fetch('/web/cities').then(res => res.json()).then((response) => {
+            console.log('response', response)
             if (response.success) {
                 _.forEach(response.data, (val) => {
                     options.push({ value: val.ID, label: val.Name })
@@ -89,7 +90,7 @@ class CreatePost extends React.Component {
         })
     }
     onChangePrice(e) {
-        this.setState({ Price: e.target.value })
+        this.setState({ price: e.target.value })
     }
     onChangeAction(e) {
         this.setState({ Action: e.target.value })

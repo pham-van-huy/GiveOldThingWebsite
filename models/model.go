@@ -87,16 +87,16 @@ func (User) TableName() string {
 // Post struct
 type Post struct {
 	Model
-	Title       string `json:"Title" form:"Title"`
-	UserId      int    `json:"UserId" form:"UserId"`
+	Title       string `json:"Title" form:"Title" validate:"min=3,max=100"`
+	UserId      int    `json:"UserId" form:"UserId" validate:nonzero`
 	User        User
 	Category    Category
-	CategoryId  int `json:"CategoryId" form:"CategoryId"`
-	CityId      int `json:"CityId" form:"CityId"`
+	CategoryId  int `json:"CategoryId" form:"CategoryId" validate:nonzero`
+	CityId      int `json:"CityId" form:"CityId" validate:nonzero`
 	City        City
 	Price       int     `json:"Price" form:"Price"`
 	Images      []Image `gorm:"foreignkey:OwnerId"`
-	Description string  `json:"Description" form:"Description"`
+	Description string  `json:"Description" form:"Description" validate:"min=3,max=1000"`
 	Contact     string  `json:"Contact" form:"Contact"`
 	Lat         float64 `json:"Lat" form:"Lat"`
 	Lng         float64 `json:"Lng" form:"Lng"`
@@ -141,6 +141,17 @@ type City struct {
 
 func (City) TableName() string {
 	return "cities"
+}
+
+// Post struct
+type BookMark struct {
+	Model
+	UserId int `json:"UserId" form:"UserId" mapstructure:"UserId"`
+	PostId int `json:"PostId" form:"PostId" mapstructure:"PostId"`
+}
+
+func (BookMark) TableName() string {
+	return "bookmarks"
 }
 
 const (

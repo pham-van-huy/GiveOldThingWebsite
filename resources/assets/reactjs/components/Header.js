@@ -29,7 +29,7 @@ class Header extends React.Component {
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                       bombay
+                        {this.props.infoUser.name}
                 </a>
                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a className="dropdown-item" href="#">Profile</a>

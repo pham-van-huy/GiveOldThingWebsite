@@ -12,6 +12,7 @@ type payload interface {
 }
 
 type response struct {
+	Code    int     `json:"code"`
 	Success bool    `json:"success"`
 	Data    payload `json:"data"`
 }
@@ -28,6 +29,15 @@ func RandSeq(n int) string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
+}
+
+func WrapSucc(data interface{}) interface{} {
+	res := response{}
+	res.Code = 200
+	res.Success = true
+	res.Data = data
+
+	return res
 }
 
 func ResSuccess(w http.ResponseWriter, data payload) {
