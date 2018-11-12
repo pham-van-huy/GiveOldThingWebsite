@@ -46,7 +46,9 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-
+      { from: './resources/assets/js/bootstrap.min.js', to: '' },
+      { from: './resources/assets/css/bootstrap.min.css', to: '' },
+      { from: './resources/assets/js/jquery-3.3.1.min.js', to: '' }
     ]),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
