@@ -6,7 +6,7 @@ import (
 	"github.com/icrowley/fake"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	m "old.thing/models"
+	m "bombay.com/old.thing/models"
 )
 
 func Init() {
