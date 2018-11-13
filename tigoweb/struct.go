@@ -173,6 +173,12 @@ type ReqParams struct {
 	Value interface{}
 }
 
+func ConvertParam(v interface{}) *ReqParams {
+	t := &ReqParams{}
+	t.Value = v
+	return t
+}
+
 // 将json中解析出的参数格式化为string类型，失败则返回空字符串
 func (jsonParam *ReqParams) ToString() string {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
@@ -259,6 +265,33 @@ func (jsonParam *ReqParams) ToInt64() int64 {
 		return 0
 	}
 	result, success := jsonParam.Value.(int64)
+	if !success {
+		Warning.Println("convert value to int64 failed")
+		return 0
+	}
+	return result
+}
+
+func (jsonParam *ReqParams) ToInt() int {
+	valueType := reflect.TypeOf(jsonParam.Value).Name()
+	switch valueType {
+	case "string":
+		val, err := strconv.ParseInt(jsonParam.Value.(string), 10, 0)
+		if err != nil {
+			Warning.Println("parse value to int64 failed")
+			return 0
+		}
+		return int(val)
+	case "float64":
+		return int(jsonParam.Value.(float64))
+	case "bool":
+		val := jsonParam.Value.(bool)
+		if val {
+			return 1
+		}
+		return 0
+	}
+	result, success := jsonParam.Value.(int)
 	if !success {
 		Warning.Println("convert value to int64 failed")
 		return 0

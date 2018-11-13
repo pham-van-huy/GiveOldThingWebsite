@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -69,7 +70,9 @@ func RequireTokenAuthentication(rw http.ResponseWriter, req *http.Request, next 
 	})
 
 	if err == nil && token.Valid && !authBackend.IsInBlacklist(req.Header.Get("Authorization")) {
-		next(rw, req)
+		claims, _ := token.Claims.(jwt.MapClaims)
+		ctx := context.WithValue(req.Context(), "UserId", claims["sub"])
+		next(rw, req.WithContext(ctx))
 	} else {
 		rw.WriteHeader(http.StatusUnauthorized)
 	}

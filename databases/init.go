@@ -14,16 +14,16 @@ func Init() {
 	fmt.Println("err", err)
 	defer db.Close()
 
-	// redis := s.Redis_Connect()
+	// redis := ser.Redis_Connect()
 
-	// db.AutoMigrate(&m.User{})
+	db.AutoMigrate(&m.User{})
 	// real pass: 123
 	// user1 := m.User{Name: "Phan Ngoc", Username: "phann123", Password: "$2a$10$kYEpDQa9l14Hlpy/vM6.AuHbSFuurppPOjJdBz7AZ3KQRUjPuCzMm", Address: "Da Nang"}
 	// db.Create(&user1)
 
-	// db.AutoMigrate(&m.Post{})
+	db.AutoMigrate(&m.Post{})
 
-	// db.AutoMigrate(&m.Category{})
+	db.AutoMigrate(&m.Category{})
 	// cate1 := m.Category{Name: "Xe co"}
 	// cate2 := m.Category{Name: "Do dien tu"}
 	// cate3 := m.Category{Name: "Bat dong san"}
@@ -31,9 +31,9 @@ func Init() {
 	// db.Create(&cate2)
 	// db.Create(&cate3)
 
-	// db.AutoMigrate(&m.Image{})
+	db.AutoMigrate(&m.Image{})
 
-	// db.AutoMigrate(&m.City{})
+	db.AutoMigrate(&m.City{})
 	// city1 := m.City{Name: "Da Nang"}
 	// city2 := m.City{Name: "Quang Nam"}
 	// city3 := m.City{Name: "Ha Noi"}
@@ -44,5 +44,6 @@ func Init() {
 	// db.Create(&city3)
 	// db.Create(&city4)
 	// db.Create(&city5)
+
 	db.AutoMigrate(&m.BookMark{})
 }

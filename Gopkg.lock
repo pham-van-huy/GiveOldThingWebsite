@@ -2,11 +2,12 @@
 
 
 [[projects]]
-  digest = "1:b06d27db2f87588507f245345f329b4192809e72ab32385a26a6eb25988eb82e"
+  branch = "master"
+  digest = "1:cc439e1d9d8cff3d575642f5401033b00f2b8d0cd9f859db45604701c990879a"
   name = "github.com/corpix/uarand"
   packages = ["."]
   pruneopts = "UT"
-  revision = "031be390f409fb4bac8fb299e3bcd101479f89f8"
+  revision = "2b8494104d86337cdd41d0a49cbed8e4583c0ab4"
 
 [[projects]]
   digest = "1:bb2130e54ac8ea3ff78312ca365ce3b8a23423ed362530551bdceaccfa4d8e77"
@@ -112,6 +113,22 @@
   version = "v1.3.0"
 
 [[projects]]
+  digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
+  version = "v1.1.2"
+
+[[projects]]
+  digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
+  name = "github.com/urfave/cli"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
+  version = "v1.20.0"
+
+[[projects]]
   digest = "1:d688f4ad71b5dfad95c2d74cb0feac09f8f3c32ae5cecc078230dbdeece39e53"
   name = "github.com/urfave/negroni"
   packages = ["."]
@@ -160,6 +177,8 @@
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/joho/godotenv",
+    "github.com/mitchellh/mapstructure",
+    "github.com/urfave/cli",
     "github.com/urfave/negroni",
     "golang.org/x/crypto/bcrypt",
     "gopkg.in/validator.v2",

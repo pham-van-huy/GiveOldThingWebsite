@@ -3,9 +3,9 @@ package services
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	models "bombay.com/old.thing/models"
+	tigoweb "bombay.com/old.thing/tigoweb"
 	jwt "github.com/dgrijalva/jwt-go"
 	request "github.com/dgrijalva/jwt-go/request"
 	"golang.org/x/crypto/bcrypt"
@@ -20,7 +20,8 @@ func Login(requestUser *models.User) (int, []byte) {
 	infoUser, isAuth := authBackend.Authenticate(requestUser)
 
 	if isAuth {
-		token, err := authBackend.GenerateToken(strconv.Itoa(requestUser.ID))
+		Id := tigoweb.ConvertParam(infoUser.(map[string]interface{})["id"]).ToInt()
+		token, err := authBackend.GenerateToken(Id)
 
 		if err != nil {
 			return http.StatusInternalServerError, []byte("")
@@ -39,7 +40,7 @@ func Login(requestUser *models.User) (int, []byte) {
 
 func RefreshToken(requestUser *models.User) []byte {
 	authBackend := InitJWTAuthenticationBackend()
-	token, err := authBackend.GenerateToken(strconv.Itoa(requestUser.ID))
+	token, err := authBackend.GenerateToken(requestUser.ID)
 	if err != nil {
 		panic(err)
 	}
