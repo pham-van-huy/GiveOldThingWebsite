@@ -34,6 +34,13 @@ class DetailPost extends React.Component {
             }
         })
     }
+    bookmark() {
+        postApi('/web/bookmarks', {PostId: this.state.ID}, 'json', true).then((response) => {
+            if (response.status == 200 && response.data.success) {
+              
+            }
+        })
+    }
     render() {
         var settings = {
             dots: true,
@@ -64,7 +71,7 @@ class DetailPost extends React.Component {
                                 <p className="card-text">{this.state.Description}</p>
                                 <p className="card-text price"><FontAwesomeIcon icon={['fas', 'money-bill-alt']} /> {this.state.Price + ' D'}</p>
                                 <p className="card-text phone"><FontAwesomeIcon icon={['fas', 'phone']} /> <strong>{'0932047956'}</strong></p>
-                                <a href="#" className="btn btn-primary">Add to bookmark</a>
+                                <a href="#" className="btn btn-primary" onClick={this.bookmark.bind(this)}>Add to bookmark</a>
                             </div>
                         </div>
                     </div>

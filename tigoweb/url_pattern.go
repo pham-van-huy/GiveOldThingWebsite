@@ -14,12 +14,6 @@ type UrlPatternMidWare struct {
 	requestUrl string
 }
 
-// 封装HTTP请求的中间件，主要有以下功能：
-//  - 1、根据反射找到挂载的handler；
-//  - 2、调用handler的InitHandler方法；
-//  - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
-//  - 4、调用handler中的功能方法；
-//  - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	// 加载handler
 	handler := reflect.ValueOf(urlPatternMidWare.Handler)
@@ -28,6 +22,8 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 
 	paramPasser := handler.MethodByName("ParseRequestParam")
 
+	middlewares := handler.MethodByName("RunBefore")
+
 	requestMethod := MethodMapping[request.Method]
 	Trace.Printf("%s %s", requestMethod, urlPatternMidWare.requestUrl)
 	function := handler.MethodByName(requestMethod)
@@ -35,6 +31,9 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 	var functionParams []reflect.Value
 	if init.IsValid() {
 		init.Call(initParams)
+	}
+	if middlewares.IsValid() {
+		middlewares.Call(functionParams)
 	}
 	if paramPasser.IsValid() {
 		paramPasser.Call(functionParams)

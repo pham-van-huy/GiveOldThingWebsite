@@ -5,7 +5,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"os"
 	"time"
 
@@ -38,7 +37,7 @@ func InitJWTAuthenticationBackend() *JWTAuthenticationBackend {
 	return authBackendInstance
 }
 
-func (backend *JWTAuthenticationBackend) GenerateToken(userUUID string) (string, error) {
+func (backend *JWTAuthenticationBackend) GenerateToken(userUUID int) (string, error) {
 	token := jwt.New(jwt.SigningMethodRS512)
 	token.Claims = jwt.MapClaims{
 		"exp": time.Now().Add(time.Hour * time.Duration(settings.Get().JWTExpirationDelta)).Unix(),
@@ -54,8 +53,8 @@ func (backend *JWTAuthenticationBackend) GenerateToken(userUUID string) (string,
 }
 
 func (backend *JWTAuthenticationBackend) Authenticate(user *models.User) (interface{}, bool) {
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	fmt.Println("hashpass", string(hashedPassword))
+	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	// fmt.Println("hashpass", string(hashedPassword))
 	db := DB_Instance()
 	userAuth := models.User{}
 	db.Where("username = ?", user.Username).First(&userAuth)

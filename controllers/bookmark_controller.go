@@ -10,9 +10,12 @@ type BookmarkHandler struct {
 	handler.BaseHandler
 }
 
-func (bookmarkHandler *BookmarkHandler) Create() {
+func (bookmarkHandler *BookmarkHandler) Post() {
 	db := services.DB_Instance()
-	bookmarks := models.BookMark{}
-	db.Find(&bookmarks)
-	bookmarkHandler.ResponseAsJson(WrapSucc(bookmarks))
+	bookmark := models.BookMark{}
+	bookmark.UserId = bookmarkHandler.GetCtxVal("UserId").ToInt()
+	bookmark.PostId = bookmarkHandler.GetParameter("PostId").ToInt()
+	db.Create(&bookmark)
+
+	bookmarkHandler.ResponseAsJson(WrapSucc(bookmark))
 }

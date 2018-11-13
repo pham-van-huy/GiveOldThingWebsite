@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -16,27 +17,48 @@ type Response interface {
 	// Print()
 }
 
-// Handler的基础类，开发者开发的handler继承此类
 type BaseHandler struct {
 	ResponseWriter http.ResponseWriter
 	Request        *http.Request
 	RequestParams  map[string]interface{}
 	ctxValMap      map[string]interface{}
+	premiddleware  []MiddlewareFunc
+}
+
+type (
+	// HandlerFunc    func() error
+	MiddlewareFunc func(*BaseHandler)
+)
+
+// Pre adds middleware to the chain which is run before router.
+func (baseHandler *BaseHandler) Pre(middleware ...MiddlewareFunc) {
+	baseHandler.premiddleware = append(baseHandler.premiddleware, middleware...)
 }
 
 // 初始化Handler的方法
 func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
+	baseHandler.ctxValMap = make(map[string]interface{})
 }
 
-// 解析json中的值
+func (baseHandler *BaseHandler) RunBefore() {
+	for i := 0; i <= len(baseHandler.premiddleware)-1; i++ {
+		baseHandler.premiddleware[i](baseHandler)
+	}
+}
+
 func (baseHandler *BaseHandler) ParseRequestParam() {
-	defer baseHandler.Request.Body.Close()
-	if baseHandler.GetHeader("Content-Type") == "application/json" {
+	arrSegHead := strings.Split(baseHandler.GetHeader("Content-Type"), ";")
+	contentTypeF := ""
+	if len(arrSegHead) > 0 {
+		contentTypeF = arrSegHead[0]
+	}
+	if contentTypeF == "application/json" {
 		jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
+
 		json.Unmarshal([]byte(jsonData), &baseHandler.RequestParams)
-	} else if baseHandler.GetHeader("Content-Type") == "multipart/form-data" {
+	} else if contentTypeF == "multipart/form-data" {
 		for key, vals := range baseHandler.Request.MultipartForm.Value {
 			for _, val := range vals {
 				baseHandler.RequestParams[key] = val
@@ -47,7 +69,7 @@ func (baseHandler *BaseHandler) ParseRequestParam() {
 				baseHandler.RequestParams[key] = files
 			}
 		}
-	} else if baseHandler.GetHeader("Content-Type") == "application/x-www-form-urlencoded" {
+	} else if contentTypeF == "application/x-www-form-urlencoded" {
 		baseHandler.Request.ParseForm()
 		for key, vals := range baseHandler.Request.Form {
 			for _, val := range vals {
@@ -55,9 +77,10 @@ func (baseHandler *BaseHandler) ParseRequestParam() {
 			}
 		}
 	}
+	defer baseHandler.Request.Body.Close()
 }
 
-/////////////////////////////////////////////////////output/////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////// output /////////////////////////////////////////////////////////////
 func (baseHandler *BaseHandler) ToJson(response Response) (result string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
@@ -254,20 +277,15 @@ func (baseHandler *BaseHandler) DecodeStruct(v interface{}) error {
 	return err
 }
 
-// 根据key获取对应的参数值
-//   - 如果Content-Type是application/json，则直接从http的body中解析出key对应的value
-//   - 否则，根据key直接获取value
 func (baseHandler *BaseHandler) GetParameter(key string) (value *ReqParams) {
 	jsonValue := &ReqParams{}
-	if baseHandler.GetHeader("Content-Type") == "application/json" {
-		if value, ok := baseHandler.RequestParams[key]; ok {
-			jsonValue.Value = value
-		} else {
-			jsonValue.Value = nil
-		}
-		return jsonValue
+
+	if value, ok := baseHandler.RequestParams[key]; ok {
+		jsonValue.Value = value
+	} else {
+		jsonValue.Value = nil
 	}
-	jsonValue.Value = baseHandler.Request.FormValue(key)
+
 	return jsonValue
 }
 
@@ -325,12 +343,14 @@ func (baseHandler *BaseHandler) Options() {
 //////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
 
 func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
-	baseHandler.ctxValMap[key] = val
+	reqParam := &ReqParams{}
+	reqParam.Value = val
+	baseHandler.ctxValMap[key] = reqParam
 }
 
-func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
+func (baseHandler *BaseHandler) GetCtxVal(key string) *ReqParams {
 	if val, isExisted := baseHandler.ctxValMap[key]; isExisted {
-		return val
+		return val.(*ReqParams)
 	} else {
 		return nil
 	}
